@@ -8,7 +8,17 @@ let locationList = [];
 
 searchFormEl.addEventListener("submit", (event) => {
   event.preventDefault();
+  console.log(event.target);
   submitSearchForm(event.target);
+});
+
+locationContainerEl.addEventListener("click", (event) => {
+  const index = event.target.dataset.locationIndex;
+  if (index >= 0) {
+    locationList.splice(index, 1);
+    updateLocalStorage();
+    renderLocationListItems();
+  }
 });
 
 searchResultsEl.addEventListener("click", (event) => {
@@ -23,8 +33,9 @@ searchResultsEl.addEventListener("click", (event) => {
     // TODO Add a modal to notify the user.
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
     // Add this city to history list
+
     locationList.push(location);
-    locationContainerEl.append(event.target);
+    renderLocationListItems();
     // get weather info for this location
     clearSearchResults();
     updateLocalStorage();
@@ -54,6 +65,7 @@ async function submitSearchForm(form) {
   searchResults = await getCoords(formData.citySearch);
   console.log(searchResults);
   renderSearchResults(searchResults);
+  form.reset();
 }
 
 function renderSearchResults(searchResults) {
@@ -66,9 +78,15 @@ function renderSearchResults(searchResults) {
 }
 
 function renderLocationListItems() {
-  console.log(locationList);
-  locationList.forEach((location) => {
-    locationContainerEl.append(locationButton(location));
+  clearLocationContainer();
+  locationList.forEach((location, index) => {
+    let locationEl = document.createElement("div");
+    locationEl.append(locationButton(location));
+    let deleteBtn = document.createElement("button");
+    deleteBtn.dataset.locationIndex = index;
+    deleteBtn.textContent = "❌";
+    locationEl.append(deleteBtn);
+    locationContainerEl.append(locationEl);
   });
 }
 
@@ -101,6 +119,12 @@ function removeDuplicateSearchResults(arr) {
 
 function clearSearchResults() {
   searchResultsEl.querySelectorAll("*").forEach((element) => element.remove());
+}
+
+function clearLocationContainer() {
+  locationContainerEl
+    .querySelectorAll("*")
+    .forEach((element) => element.remove());
 }
 
 function updateLocalStorage() {
