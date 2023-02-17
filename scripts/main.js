@@ -1,29 +1,44 @@
-const apiKey = "f0acb6d9e0139fb20b34cb331a5c0451";
-let forecastUrl = `http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${apiKey}`;
+import { getCoords, getWeather } from "./fetchers.js";
 
-function getweather(lat, lon) {
-  let url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+let citySearchFormEl = document.getElementById("city-search-form");
+let citySearchResultsEl = document.getElementById("city-search-results");
 
-  fetch(url)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    });
+citySearchFormEl.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitSearchForm(event.target);
+});
+
+async function submitSearchForm(form) {
+  var searchResults = [];
+  const formData = Object.fromEntries(new FormData(form).entries());
+  console.log("Test complete.", formData);
+  if (containsInvalidCharacters(formData.citySearch)) {
+    console.log("Invalid Characters");
+    return;
+  }
+  searchResults = await getCoords(formData.citySearch);
+  console.log(searchResults);
+  generateCitySearchResults(searchResults);
 }
 
-// getweather();
-
-function getCoords(cityName) {
-  let limit = 15;
-  let url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${apiKey}`;
-
-  fetch(url)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => console.log(data));
+function generateCitySearchResults(searchResults) {
+  citySearchResultsEl
+    .querySelectorAll("*")
+    .forEach((element) => element.remove());
+  searchResults.forEach((result) => {
+    let li = document.createElement("p");
+    li.setAttribute("data-lon", result.lon);
+    li.setAttribute("data-lat", result.lat);
+    let span = document.createElement("span");
+    span.textContent = `${result.name}, ${result.state}`;
+    li.append(span);
+    let button = document.createElement("button");
+    button.textContent = "Select";
+    li.append(button);
+    citySearchResultsEl.append(li);
+  });
 }
 
-getCoords("Fredericton");
+function containsInvalidCharacters(search) {
+  return /([0-9])+|,|\.|&/.test(search);
+}

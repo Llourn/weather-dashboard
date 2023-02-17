@@ -7,6 +7,35 @@
     <title>Weather Dashboard</title>
   </head>
   <body>
-    <script src="./scripts/main.js"></script>
+    <!--
+      Planning:
+      Search for the city, provide all options in a list close to the search.
+      Allow the user to select the most appropriate selection.
+      Once selected, the location is added to a master list, and the weather for that location is loaded.
+      Selecting other locations in the list will load the weather for that location.
+      Any locations added to the master list will also have a time stamp. if more than 4(?) hours have passed
+      another API call will go out and the data will be refreshed.
+      I also want to give the user the option to trigger a data refresh.
+      The refresh trigger will appear in the weather display.
+      At mobile, clicking the location, or adding a new location will scroll the user to the weather display.
+    -->
+
+    <section>
+      <form action="" id="city-search-form">
+        <label for="city-search">Search City: </label
+        ><input type="text" name="citySearch" id="city-search" />
+        <button type="submit">Search</button>
+      </form>
+      <div id="city-search-results"></div>
+    </section>
+
+    <section>
+      <h3>Location List:</h3>
+      <ul></ul>
+    </section>
+
+    <section id="weather-display"></section>
+
+    <script type="module" src="./scripts/main.js"></script>
   </body>
 </html>
