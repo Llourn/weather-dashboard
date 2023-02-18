@@ -1,8 +1,9 @@
-import { getCoords, getWeather } from "./fetchers.js";
+import { fetchCoords, fetchForecast, fetchWeather } from "./fetchers.js";
 
 let searchFormEl = document.getElementById("city-search-form");
 let searchResultsEl = document.getElementById("city-search-results");
 let locationContainerEl = document.getElementById("location-container");
+let weatherDisplayEl = document.getElementById("weather-display");
 
 let locationList = [];
 
@@ -18,6 +19,8 @@ locationContainerEl.addEventListener("click", (event) => {
     locationList.splice(index, 1);
     updateLocalStorage();
     renderLocationListItems();
+  } else if (event.target.dataset.lon && event.target.dataset.lat) {
+    getWeather(event.target);
   }
 });
 
@@ -62,10 +65,23 @@ async function submitSearchForm(form) {
     console.log("Invalid Characters");
     return;
   }
-  searchResults = await getCoords(formData.citySearch);
+  searchResults = await fetchCoords(formData.citySearch);
   console.log(searchResults);
   renderSearchResults(searchResults);
   form.reset();
+}
+
+async function getWeather(location) {
+  let weatherData = await fetchWeather(
+    location.dataset.lat,
+    location.dataset.lon
+  );
+
+  let forecastData = await fetchForecast(
+    location.dataset.lat,
+    location.dataset.lon
+  );
+  renderWeather(weatherData, forecastData);
 }
 
 function renderSearchResults(searchResults) {
@@ -88,6 +104,35 @@ function renderLocationListItems() {
     locationEl.append(deleteBtn);
     locationContainerEl.append(locationEl);
   });
+}
+
+function renderWeather(weatherData, forecastData) {
+  console.log("RENDER WEATHER");
+  console.log(weatherData);
+  console.log(forecastData);
+  let currentDay = "";
+  let container;
+  forecastData.list.forEach((timeslot) => {
+    let timeslotDay = timeslot.dt_txt.split(" ")[0];
+    if (currentDay) weatherDisplayEl.append(container);
+    if (currentDay != timeslotDay) {
+      // console.log(timeslotDay);
+      currentDay = timeslotDay;
+      container = document.createElement("div");
+      container.classList.add("day-container");
+    }
+    let weatherEl = document.createElement("div");
+    weatherEl.textContent = timeslotDay;
+    // console.log(weatherEl);
+    container.append(weatherEl);
+  });
+}
+
+// NOTES: So instead of just a single card for each day, I want to split the forecast into day and night.
+// And then a link to load the hourly forecast
+
+function weatherCard(data) {
+  let container = document.createElement("div");
 }
 
 function locationButton(buttonData) {
