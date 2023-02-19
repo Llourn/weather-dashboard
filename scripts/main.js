@@ -40,7 +40,7 @@ searchResultsEl.addEventListener("click", (event) => {
     locationList.push(location);
     renderLocationListItems();
     // get weather info for this location
-    clearSearchResults();
+    emptyElement(searchResultsEl);
     updateLocalStorage();
   }
 });
@@ -85,7 +85,7 @@ async function getWeather(location) {
 }
 
 function renderSearchResults(searchResults) {
-  clearSearchResults();
+  emptyElement(searchResultsEl);
   let cleanedResults = removeDuplicateSearchResults(searchResults);
   cleanedResults.forEach((result) => {
     let locationData = locationButtonObj(result);
@@ -94,7 +94,7 @@ function renderSearchResults(searchResults) {
 }
 
 function renderLocationListItems() {
-  clearLocationContainer();
+  emptyElement(locationContainerEl);
   locationList.forEach((location, index) => {
     let locationEl = document.createElement("div");
     locationEl.append(locationButton(location));
@@ -107,36 +107,50 @@ function renderLocationListItems() {
 }
 
 function renderWeather(weatherData, forecastData) {
-  console.log("RENDER WEATHER");
-  console.log(weatherData);
-  console.log(forecastData);
-  let currentDay = "";
-  let container;
   forecastData.list.forEach((timeslot) => {
-    let timeslotDay = timeslot.dt_txt.split(" ")[0];
-    if (currentDay) weatherDisplayEl.append(container);
-    if (currentDay != timeslotDay) {
-      // console.log(timeslotDay);
-      currentDay = timeslotDay;
-      container = document.createElement("div");
-      container.classList.add("day-container");
+    let day = timeslot.dt_txt.split(" ")[0].split("-");
+    let dayFormatted = `${day[1]}/${day[2]}/${day[0]}`;
+    let time = timeslot.dt_txt.split(" ")[1];
+
+    if (time.includes("12")) {
+      let weatherEl = document.createElement("div");
+      let dayEl = document.createElement("p");
+      dayEl.textContent = dayFormatted;
+      let weatherImgContainer = document.createElement("div");
+
+      timeslot.weather.forEach((element) => {
+        let weatherImgEl = document.createElement("img");
+        weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@2x.png`;
+        weatherImgContainer.append(weatherImgEl);
+      });
+      let tempEl = document.createElement("p");
+      tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}`;
+      let feelsLikeEl = document.createElement("p");
+      feelsLikeEl.textContent = `Feels like: ${Math.round(
+        timeslot.main.feels_like
+      )}`;
+      let windEl = document.createElement("div");
+      windEl.textContent = `Wind: ${getCompassDirection(
+        timeslot.wind.deg
+      )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
+      let humidityEl = document.createElement("p");
+      humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
+
+      weatherEl.append(
+        dayEl,
+        weatherImgContainer,
+        tempEl,
+        feelsLikeEl,
+        windEl,
+        humidityEl
+      );
+
+      weatherDisplayEl.append(weatherEl);
     }
-    let weatherEl = document.createElement("div");
-    weatherEl.textContent = timeslotDay;
-    // console.log(weatherEl);
-    container.append(weatherEl);
   });
 }
 
-// NOTES: So instead of just a single card for each day, I want to split the forecast into day and night.
-// And then a link to load the hourly forecast
-
-function weatherCard(data) {
-  let container = document.createElement("div");
-}
-
 function locationButton(buttonData) {
-  console.log(buttonData);
   let button = document.createElement("button");
   button.setAttribute("data-lon", buttonData.lon);
   button.setAttribute("data-lat", buttonData.lat);
@@ -162,14 +176,8 @@ function removeDuplicateSearchResults(arr) {
   return newArr;
 }
 
-function clearSearchResults() {
-  searchResultsEl.querySelectorAll("*").forEach((element) => element.remove());
-}
-
-function clearLocationContainer() {
-  locationContainerEl
-    .querySelectorAll("*")
-    .forEach((element) => element.remove());
+function emptyElement(targetElement) {
+  targetElement.querySelectorAll("*").forEach((element) => element.remove());
 }
 
 function updateLocalStorage() {
@@ -187,6 +195,30 @@ function locationButtonObj(data) {
     lon: data.lon,
     lat: data.lat,
   };
+}
+
+function getCompassDirection(directionInDegrees) {
+  let directionCodes = [
+    "N",
+    "NNE",
+    "NE",
+    "ENE",
+    "E",
+    "ESE",
+    "SE",
+    "SSE",
+    "S",
+    "SSW",
+    "SW",
+    "WSW",
+    "W",
+    "WNW",
+    "NW",
+    "NNW",
+    "N",
+  ];
+  let index = Math.round(directionInDegrees / 22.5);
+  return directionCodes[index];
 }
 
 function isAlreadyInLocationList(location) {

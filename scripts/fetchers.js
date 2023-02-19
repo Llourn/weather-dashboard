@@ -33,8 +33,5 @@ async function fetchCoords(cityName) {
   console.log(data);
   return data;
 }
-// getWeather();
-
-// const results = await getCoords("Fredericton");
 
 export { fetchForecast, fetchCoords, fetchWeather };
