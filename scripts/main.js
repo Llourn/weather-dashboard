@@ -2,31 +2,23 @@ import { fetchCoords, fetchForecast, fetchWeather } from "./fetchers.js";
 
 let dayjsObj = dayjs();
 
-let searchFormEl = document.getElementById("city-search-form");
-let searchResultsEl = document.getElementById("city-search-results");
+let searchFormEl = document.getElementById("search-form");
+let searchResultsEl = document.getElementById("search-results");
 let locationContainerEl = document.getElementById("location-container");
 let weatherDisplayEl = document.getElementById("weather-display");
+let fiveDayDisplayEl = document.getElementById("five-day-display");
 
 let locationList = [];
 
 searchFormEl.addEventListener("submit", (event) => {
   event.preventDefault();
+  console.log("SUBMIT");
   console.log(event.target);
   submitSearchForm(event.target);
 });
 
-locationContainerEl.addEventListener("click", (event) => {
-  const index = event.target.dataset.locationIndex;
-  if (index >= 0) {
-    locationList.splice(index, 1);
-    updateLocalStorage();
-    renderLocationListItems();
-  } else if (event.target.dataset.lon && event.target.dataset.lat) {
-    getWeather(event.target);
-  }
-});
-
 searchResultsEl.addEventListener("click", (event) => {
+  console.log("CLICK");
   let location = {
     name: event.target.textContent,
     lon: event.target.dataset.lon,
@@ -42,8 +34,19 @@ searchResultsEl.addEventListener("click", (event) => {
     locationList.push(location);
     renderLocationListItems();
     // get weather info for this location
-    emptyElement(searchResultsEl);
+    emptyElement(searchResultsEl, ".dynamic");
     updateLocalStorage();
+  }
+});
+
+locationContainerEl.addEventListener("click", (event) => {
+  const index = event.target.dataset.locationIndex;
+  if (index >= 0) {
+    locationList.splice(index, 1);
+    updateLocalStorage();
+    renderLocationListItems();
+  } else if (event.target.dataset.lon && event.target.dataset.lat) {
+    getWeather(event.target);
   }
 });
 
@@ -61,13 +64,14 @@ init();
 
 async function submitSearchForm(form) {
   var searchResults = [];
-  const formData = Object.fromEntries(new FormData(form).entries());
-  console.log("Test complete.", formData);
-  if (containsInvalidCharacters(formData.citySearch)) {
+  // const formData = Object.fromEntries(new FormData(form).entries());
+  const formData = form.querySelector('input[name="search-field"]');
+  console.log("Test complete.", formData.value);
+  if (containsInvalidCharacters(formData.value)) {
     console.log("Invalid Characters");
     return;
   }
-  searchResults = await fetchCoords(formData.citySearch);
+  searchResults = await fetchCoords(formData.value);
   console.log(searchResults);
   renderSearchResults(searchResults);
   form.reset();
@@ -87,54 +91,181 @@ async function getWeather(location) {
 }
 
 function renderSearchResults(searchResults) {
-  emptyElement(searchResultsEl);
+  emptyElement(searchResultsEl, ".dynamic");
+
+  let hr = document.createElement("hr");
+  hr.classList.add("dynamic");
+  searchResultsEl.append(hr);
+  console.log(searchResults.length);
+  if (!searchResults.length) {
+    let warning = document.createElement("div");
+    warning.classList.add("is-warning", "notification", "dynamic");
+    warning.textContent = "No results to display. Try again.";
+    searchResultsEl.append(warning);
+  }
+
   let cleanedResults = removeDuplicateSearchResults(searchResults);
   cleanedResults.forEach((result) => {
-    let locationData = locationButtonObj(result);
-    searchResultsEl.append(locationButton(locationData));
+    let locationData = locationDataObj(result);
+    let button = document.createElement("button");
+    button.classList.add(
+      "dynamic",
+      "field",
+      "button",
+      "is-fullwidth",
+      "is-primary",
+      "is-outlined"
+    );
+    button.type = "button";
+    button.textContent = locationData.name;
+    button.dataset.lon = locationData.lon;
+    button.dataset.lat = locationData.lat;
+    searchResultsEl.append(button);
   });
 }
 
 function renderLocationListItems() {
-  emptyElement(locationContainerEl);
+  emptyElement(locationContainerEl, "a");
   locationList.forEach((location, index) => {
-    let locationEl = document.createElement("div");
-    locationEl.append(locationButton(location));
-    let deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("button", "is-danger");
-    deleteBtn.dataset.locationIndex = index;
-    // deleteBtn.textContent = "X";
-    let icon = document.createElement("i");
-    icon.classList.add("fa-sharp", "fa-solid", "fa-xmark");
-    deleteBtn.append(icon);
-    // deleteBtn.innerHTML = `<i class="fa-sharp fa-solid fa-xmark"></i>`;
-    locationEl.append(deleteBtn);
-    locationContainerEl.append(locationEl);
+    // let locationEl = document.createElement("a");
+    // locationEl.classList.add("panel-block", "is-active");
+    // locationEl.append(locationItem(location));
+    // let deleteBtn = document.createElement("button");
+    // deleteBtn.classList.add("button", "is-danger");
+    // deleteBtn.dataset.locationIndex = index;
+    // let icon = document.createElement("i");
+    // icon.classList.add("fa-sharp", "fa-solid", "fa-xmark");
+    // deleteBtn.append(icon);
+    // locationEl.append(deleteBtn);
+    locationContainerEl.append(locationItem(location, index));
   });
 }
 
 function renderWeather(locationName, weatherData, forecastData) {
+  emptyElement(weatherDisplayEl);
+  emptyElement(fiveDayDisplayEl);
   weatherDisplayEl.append(buildWeatherCard(weatherData, locationName));
 
   forecastData.list.forEach((timeslot) => {
     let time = timeslot.dt_txt.split(" ")[1];
 
     if (time.includes("12")) {
-      weatherDisplayEl.append(buildWeatherCard(timeslot));
+      fiveDayDisplayEl.append(buildWeatherCard(timeslot));
     }
   });
 }
 
-function locationButton(buttonData) {
-  let button = document.createElement("button");
-  button.classList.add("button");
-  button.setAttribute("data-lon", buttonData.lon);
-  button.setAttribute("data-lat", buttonData.lat);
-  button.textContent = `${buttonData.name}`;
-  return button;
+function locationItem(itemData) {
+  let item = document.createElement("a");
+  item.classList.add("panel-block", "is-active");
+  item.setAttribute("data-lon", itemData.lon);
+  item.setAttribute("data-lat", itemData.lat);
+  let span = document.createElement("span");
+  span.classList.add("panel-icon");
+  let icon = document.createElement("i");
+  icon.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
+  span.append(icon);
+  item.append(span);
+  item.append(itemData.name);
+  return item;
+}
+
+{
+  /* <div class="tile is-child card">
+  <header class="card-header">
+    <p class="card-header-title">PLACE AND DATE</p>
+    <div class="card-header-icon">
+      <span class="icon">
+        <i class="fa-sharp fa-solid fa-location-dot"></i>
+      </span>
+    </div>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
+      iaculis mauris.
+      <a href="#">@bulmaio</a>. <a href="#">#css</a>
+      <a href="#">#responsive</a>
+      <br />
+      <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+    </div>
+  </div>
+</div>; */
 }
 
 function buildWeatherCard(timeslot, locationName = "") {
+  let title;
+  let classNames = [];
+  if (locationName) {
+    classNames.push("todays-weather");
+    title = `${locationName} (${dayjsObj.format("dddd D MMM YYYY")})`;
+  } else {
+    classNames.push("five-day-weather");
+    let day = timeslot.dt_txt.split(" ")[0].split("-");
+    title = `${day[1]}/${day[2]}/${day[0]}`;
+  }
+
+  let weatherCardEl = document.createElement("div");
+  weatherCardEl.classList.add("tile", "is-child", "card", ...classNames);
+  // card header
+  let cardHeaderEl = document.createElement("header");
+  cardHeaderEl.classList.add("card-header");
+  let headerTitleEl = document.createElement("p");
+  headerTitleEl.classList.add("card-header-title");
+  headerTitleEl.textContent = title;
+  let headerIconEl = document.createElement("div");
+  if (locationName) {
+    headerIconEl.classList.add("card-header-icon");
+    let iconEl = document.createElement("span");
+    iconEl.classList.add("icon");
+    let iconImgEl = document.createElement("i");
+    iconImgEl.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
+    iconEl.append(iconImgEl);
+    headerIconEl.append(iconEl);
+  }
+  cardHeaderEl.append(headerTitleEl, headerIconEl);
+
+  // card content
+  let cardContentEl = document.createElement("div");
+  cardContentEl.classList.add("card-content");
+  let contentEl = document.createElement("div");
+  contentEl.classList.add("content");
+  let weatherImgContainer = document.createElement("div");
+  timeslot.weather.forEach((element) => {
+    let weatherImgEl = document.createElement("img");
+    weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@4x.png`;
+    weatherImgEl.alt = element.description;
+    weatherImgContainer.append(weatherImgEl);
+  });
+  let tempEl = document.createElement("p");
+  tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}°C`;
+  let feelsLikeEl = document.createElement("p");
+  feelsLikeEl.textContent = `Feels like: ${Math.round(
+    timeslot.main.feels_like
+  )}°C`;
+  let windEl = document.createElement("div");
+  windEl.textContent = `Wind: ${getCompassDirection(
+    timeslot.wind.deg
+  )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
+  let humidityEl = document.createElement("p");
+  humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
+  let textContainer = document.createElement("div");
+  textContainer.append(tempEl, feelsLikeEl, windEl, humidityEl);
+  cardContentEl.append(weatherImgContainer, textContainer);
+
+  weatherCardEl.append(cardHeaderEl, cardContentEl);
+
+  if (locationName) {
+    return weatherCardEl;
+  } else {
+    let parentEl = document.createElement("div");
+    parentEl.classList.add("tile", "is-parent");
+    parentEl.append(weatherCardEl);
+    return parentEl;
+  }
+}
+
+function buildFiveDayCard(timeslot, locationName = "") {
   let title;
   let classNames = ["column"];
   if (locationName) {
@@ -201,15 +332,18 @@ function removeDuplicateSearchResults(arr) {
   return newArr;
 }
 
-function emptyElement(targetElement) {
-  targetElement.querySelectorAll("*").forEach((element) => element.remove());
+function emptyElement(targetElement, selector = "*") {
+  console.log("EMPTY", targetElement, selector);
+  targetElement
+    .querySelectorAll(selector)
+    .forEach((element) => element.remove());
 }
 
 function updateLocalStorage() {
   localStorage.setItem("locationList", JSON.stringify(locationList));
 }
 
-function locationButtonObj(data) {
+function locationDataObj(data) {
   let name = "";
   if (data.name) name += data.name;
   if (data.state) name += `, ${data.state}`;

@@ -12,25 +12,229 @@
     ></script>
   </head>
   <body>
-    <div id="toast" class="container is-max-desktop">
+    <div class="columns is-desktop">
+      <div class="tile is-vertical column is-one-third">
+        <div class="tile is-parent">
+          <div class="tile is-child box">
+            <form id="search-form" class="field" action="">
+              <div class="field">
+                <label class="label">Search for location</label>
+                <div class="control has-icons-left">
+                  <input
+                    class="input is-primary"
+                    type="text"
+                    name="search-field"
+                    placeholder="Enter location name here"
+                  />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field is-grouped">
+                <div class="control">
+                  <input type="submit" class="button is-primary" />
+                </div>
+                <div class="control">
+                  <button class="button is-danger is-light">Cancel</button>
+                </div>
+              </div>
+            </form>
+            <div id="search-results">
+              <button
+                class="dynamic field button is-fullwidth is-success is-outlined"
+              >
+                Normal
+              </button>
+              <button
+                class="dynamic field button is-fullwidth is-info is-outlined"
+              >
+                Normal
+              </button>
+              <button
+                class="dynamic field button is-fullwidth is-warning is-outlined"
+              >
+                Normal
+              </button>
+              <button
+                class="dynamic field button is-fullwidth is-primary is-outlined"
+              >
+                Normal
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tile is-parent">
+          <div id="location-container" class="tile is-child panel is-primary">
+            <p class="panel-heading">Locations</p>
+            <a class="panel-block is-active">
+              <span class="panel-icon">
+                <i class="fa-sharp fa-solid fa-location-dot"></i>
+              </span>
+              Location name 1
+            </a>
+            <a class="panel-block is-active">
+              <span class="panel-icon">
+                <i class="fa-sharp fa-solid fa-location-dot"></i>
+              </span>
+              Location name 2
+            </a>
+            <a class="panel-block is-active">
+              <span class="panel-icon">
+                <i class="fa-sharp fa-solid fa-location-dot"></i>
+              </span>
+              Location name 3
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="tile is-vertical">
+          <div id="weather-display" class="tile is-parent">
+            <div class="tile is-child card">
+              <header class="card-header">
+                <p class="card-header-title">PLACE AND DATE</p>
+                <div class="card-header-icon" aria-label="more options">
+                  <span class="icon">
+                    <i class="fa-sharp fa-solid fa-location-dot"></i>
+                  </span>
+                </div>
+              </header>
+              <div class="card-content">
+                <div class="content">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Phasellus nec iaculis mauris.
+                  <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                  <a href="#">#responsive</a>
+                  <br />
+                  <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="five-day-display" class="tile">
+            <div class="tile five-day-card is-parent">
+              <div class="tile is-child card">
+                <header class="card-header">
+                  <p class="card-header-title">PLACE AND DATE</p>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fa-sharp fa-solid fa-location-dot"></i>
+                    </span>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Phasellus nec iaculis mauris.
+                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br />
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tile five-day-card is-parent">
+              <div class="tile is-child card">
+                <header class="card-header">
+                  <p class="card-header-title">PLACE AND DATE</p>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fa-sharp fa-solid fa-location-dot"></i>
+                    </span>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Phasellus nec iaculis mauris.
+                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br />
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tile five-day-card is-parent">
+              <div class="tile is-child card">
+                <header class="card-header">
+                  <p class="card-header-title">PLACE AND DATE</p>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fa-sharp fa-solid fa-location-dot"></i>
+                    </span>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Phasellus nec iaculis mauris.
+                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br />
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tile five-day-card is-parent">
+              <div class="tile is-child card">
+                <header class="card-header">
+                  <p class="card-header-title">PLACE AND DATE</p>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fa-sharp fa-solid fa-location-dot"></i>
+                    </span>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Phasellus nec iaculis mauris.
+                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br />
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tile five-day-card is-parent">
+              <div class="tile is-child card">
+                <header class="card-header">
+                  <p class="card-header-title">PLACE AND DATE</p>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="icon">
+                      <i class="fa-sharp fa-solid fa-location-dot"></i>
+                    </span>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Phasellus nec iaculis mauris.
+                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
+                    <a href="#">#responsive</a>
+                    <br />
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div id="toast" class="container is-max-desktop">
       <div class="notification is-warning">
         <i class="fa-sharp fa-solid fa-triangle-exclamation"></i>
         <span>This is a warning. Consider yourself warned.</span>
       </div>
-    </div>
-    <!--
-      Planning:
-      Search for the city, provide all options in a list close to the search.
-      Allow the user to select the most appropriate selection.
-      Once selected, the location is added to a master list, and the weather for that location is loaded.
-      Selecting other locations in the list will load the weather for that location.
-      Any locations added to the master list will also have a time stamp. if more than 4(?) hours have passed
-      another API call will go out and the data will be refreshed.
-      I also want to give the user the option to trigger a data refresh.
-      The refresh trigger will appear in the weather display.
-      At mobile, clicking the location, or adding a new location will scroll the user to the weather display.
-    -->
-    <section class="container is-max-desktop">
+    </div> -->
+    <!-- <section class="container is-max-desktop">
       <section class="container">
         <form action="" id="city-search-form">
           <label for="city-search">Search City: </label
@@ -46,7 +250,7 @@
       </section>
 
       <section id="weather-display" class="columns"></section>
-    </section>
+    </section> -->
 
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script type="module" src="./scripts/main.js"></script>
