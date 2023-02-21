@@ -11,6 +11,24 @@
   background-size: cover;
 }
 
+a.panel-block {
+  display: flex;
+}
+
+a.panel-block span {
+  pointer-events: none;
+}
+
+a.panel-block span:nth-child(2) {
+  flex-basis: 100%;
+}
+
+a.panel-block span:nth-child(3) {
+  pointer-events: all;
+  margin-right: 0;
+  margin-left: 0.75em;
+}
+
 @media screen and (min-width: 0px) {
   #five-day-display {
     display: unset;

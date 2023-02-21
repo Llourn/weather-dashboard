@@ -7,6 +7,7 @@ let searchResultsEl = document.getElementById("search-results");
 let locationContainerEl = document.getElementById("location-container");
 let weatherDisplayEl = document.getElementById("weather-display");
 let fiveDayDisplayEl = document.getElementById("five-day-display");
+let clearSearchEl = document.getElementById("clear-search");
 
 let locationList = [];
 
@@ -15,6 +16,11 @@ searchFormEl.addEventListener("submit", (event) => {
   console.log("SUBMIT");
   console.log(event.target);
   submitSearchForm(event.target);
+});
+
+clearSearchEl.addEventListener("click", (event) => {
+  event.preventDefault();
+  searchFormEl.reset();
 });
 
 searchResultsEl.addEventListener("click", (event) => {
@@ -40,12 +46,16 @@ searchResultsEl.addEventListener("click", (event) => {
 });
 
 locationContainerEl.addEventListener("click", (event) => {
+  console.log(event.target);
+  console.log("location list, 43");
   const index = event.target.dataset.locationIndex;
+  console.log(index);
   if (index >= 0) {
     locationList.splice(index, 1);
     updateLocalStorage();
     renderLocationListItems();
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
+    console.log(event.target.dataset.lon, event.target.dataset.lat);
     getWeather(event.target);
   }
 });
@@ -67,6 +77,7 @@ async function submitSearchForm(form) {
   // const formData = Object.fromEntries(new FormData(form).entries());
   const formData = form.querySelector('input[name="search-field"]');
   console.log("Test complete.", formData.value);
+  console.log(searchFormEl === form);
   if (containsInvalidCharacters(formData.value)) {
     console.log("Invalid Characters");
     return;
@@ -162,18 +173,26 @@ function renderWeather(locationName, weatherData, forecastData) {
   });
 }
 
-function locationItem(itemData) {
+function locationItem(itemData, index) {
   let item = document.createElement("a");
   item.classList.add("panel-block", "is-active");
   item.setAttribute("data-lon", itemData.lon);
   item.setAttribute("data-lat", itemData.lat);
-  let span = document.createElement("span");
-  span.classList.add("panel-icon");
-  let icon = document.createElement("i");
-  icon.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
-  span.append(icon);
-  item.append(span);
-  item.append(itemData.name);
+  let leadingIcon = document.createElement("span");
+  leadingIcon.classList.add("panel-icon");
+  let leadingIconImg = document.createElement("i");
+  leadingIconImg.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
+  let itemName = document.createElement("span");
+  itemName.textContent = itemData.name;
+  let deleteIcon = document.createElement("span");
+  deleteIcon.classList.add("panel-icon", "delete");
+  deleteIcon.dataset.locationIndex = index;
+  // let deleteIconImg = document.createElement("i");
+  // deleteIconImg.classList.add("fa-sharp", "fa-solid", "fa-xmark");
+
+  leadingIcon.append(leadingIconImg);
+  // deleteIcon.append(deleteIconImg);
+  item.append(leadingIcon, itemName, deleteIcon);
   return item;
 }
 
