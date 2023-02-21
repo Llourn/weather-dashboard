@@ -11,7 +11,7 @@ async function fetchWeather(lat, lon) {
 }
 
 async function fetchForecast(lat, lon) {
-  let url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+  let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
   let response = await fetch(url);
   let data = await response.json();
@@ -22,7 +22,7 @@ async function fetchForecast(lat, lon) {
 
 async function fetchCoords(cityName) {
   let limit = 15;
-  let url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${apiKey}`;
+  let url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${apiKey}`;
 
   let response = await fetch(url);
   let data = [];
