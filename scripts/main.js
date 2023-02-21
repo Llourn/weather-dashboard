@@ -37,6 +37,8 @@ searchResultsEl.addEventListener("click", (event) => {
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
     // Add this city to history list
 
+    getWeather(event.target);
+
     locationList.push(location);
     renderLocationListItems();
     // get weather info for this location
