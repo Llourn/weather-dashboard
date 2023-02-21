@@ -12,8 +12,14 @@
     ></script>
   </head>
   <body>
+    <section class="hero is-medium">
+      <div class="hero-body">
+        <p class="title">Weather Dashboard</p>
+        <!-- <p class="subtitle">Hero subtitle</p> -->
+      </div>
+    </section>
     <div class="columns is-desktop">
-      <div class="tile is-vertical column is-one-third">
+      <div class="column is-one-third">
         <div class="tile is-parent">
           <div class="tile is-child box">
             <form id="search-form" class="field" action="">
@@ -40,28 +46,7 @@
                 </div>
               </div>
             </form>
-            <div id="search-results">
-              <button
-                class="dynamic field button is-fullwidth is-success is-outlined"
-              >
-                Normal
-              </button>
-              <button
-                class="dynamic field button is-fullwidth is-info is-outlined"
-              >
-                Normal
-              </button>
-              <button
-                class="dynamic field button is-fullwidth is-warning is-outlined"
-              >
-                Normal
-              </button>
-              <button
-                class="dynamic field button is-fullwidth is-primary is-outlined"
-              >
-                Normal
-              </button>
-            </div>
+            <div id="search-results"></div>
           </div>
         </div>
         <div class="tile is-parent">
@@ -90,140 +75,17 @@
       </div>
       <div class="column">
         <div class="tile is-vertical">
-          <div id="weather-display" class="tile is-parent">
-            <div class="tile is-child card">
-              <header class="card-header">
-                <p class="card-header-title">PLACE AND DATE</p>
-                <div class="card-header-icon" aria-label="more options">
-                  <span class="icon">
-                    <i class="fa-sharp fa-solid fa-location-dot"></i>
-                  </span>
-                </div>
-              </header>
-              <div class="card-content">
-                <div class="content">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Phasellus nec iaculis mauris.
-                  <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                  <a href="#">#responsive</a>
-                  <br />
-                  <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                </div>
-              </div>
+          <div id="weather-display" class="tile is-parent is-vertical content">
+            <div class="tile is-child box">
+              <h2>Instructions</h2>
+              <p>
+                Enter a location in the search bar and choose the correct
+                location from the search results. Once the location is selected
+                the weather for that location will load here.
+              </p>
             </div>
           </div>
-          <div id="five-day-display" class="tile">
-            <div class="tile five-day-card is-parent">
-              <div class="tile is-child card">
-                <header class="card-header">
-                  <p class="card-header-title">PLACE AND DATE</p>
-                  <div class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fa-sharp fa-solid fa-location-dot"></i>
-                    </span>
-                  </div>
-                </header>
-                <div class="card-content">
-                  <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris.
-                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                    <a href="#">#responsive</a>
-                    <br />
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="tile five-day-card is-parent">
-              <div class="tile is-child card">
-                <header class="card-header">
-                  <p class="card-header-title">PLACE AND DATE</p>
-                  <div class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fa-sharp fa-solid fa-location-dot"></i>
-                    </span>
-                  </div>
-                </header>
-                <div class="card-content">
-                  <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris.
-                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                    <a href="#">#responsive</a>
-                    <br />
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="tile five-day-card is-parent">
-              <div class="tile is-child card">
-                <header class="card-header">
-                  <p class="card-header-title">PLACE AND DATE</p>
-                  <div class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fa-sharp fa-solid fa-location-dot"></i>
-                    </span>
-                  </div>
-                </header>
-                <div class="card-content">
-                  <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris.
-                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                    <a href="#">#responsive</a>
-                    <br />
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="tile five-day-card is-parent">
-              <div class="tile is-child card">
-                <header class="card-header">
-                  <p class="card-header-title">PLACE AND DATE</p>
-                  <div class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fa-sharp fa-solid fa-location-dot"></i>
-                    </span>
-                  </div>
-                </header>
-                <div class="card-content">
-                  <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris.
-                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                    <a href="#">#responsive</a>
-                    <br />
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="tile five-day-card is-parent">
-              <div class="tile is-child card">
-                <header class="card-header">
-                  <p class="card-header-title">PLACE AND DATE</p>
-                  <div class="card-header-icon" aria-label="more options">
-                    <span class="icon">
-                      <i class="fa-sharp fa-solid fa-location-dot"></i>
-                    </span>
-                  </div>
-                </header>
-                <div class="card-content">
-                  <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris.
-                    <a href="#">@bulmaio</a>. <a href="#">#css</a>
-                    <a href="#">#responsive</a>
-                    <br />
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div id="five-day-display" class="tile content"></div>
         </div>
       </div>
     </div>
@@ -251,6 +113,29 @@
 
       <section id="weather-display" class="columns"></section>
     </section> -->
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Weather Dashboard</strong> by
+          <a href="https://lornecyr.com">Lorne Cyr</a>. The source code is
+          licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+        </p>
+        <p>
+          Header photo by
+          <a
+            href="https://unsplash.com/@mosiknife?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+            >mosi knife</a
+          >
+          on
+          <a
+            href="https://unsplash.com/photos/-PVgDgKXgZA?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+            >Unsplash</a
+          >
+        </p>
+      </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script type="module" src="./scripts/main.js"></script>

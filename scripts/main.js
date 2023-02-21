@@ -127,16 +127,6 @@ function renderSearchResults(searchResults) {
 function renderLocationListItems() {
   emptyElement(locationContainerEl, "a");
   locationList.forEach((location, index) => {
-    // let locationEl = document.createElement("a");
-    // locationEl.classList.add("panel-block", "is-active");
-    // locationEl.append(locationItem(location));
-    // let deleteBtn = document.createElement("button");
-    // deleteBtn.classList.add("button", "is-danger");
-    // deleteBtn.dataset.locationIndex = index;
-    // let icon = document.createElement("i");
-    // icon.classList.add("fa-sharp", "fa-solid", "fa-xmark");
-    // deleteBtn.append(icon);
-    // locationEl.append(deleteBtn);
     locationContainerEl.append(locationItem(location, index));
   });
 }
@@ -144,13 +134,30 @@ function renderLocationListItems() {
 function renderWeather(locationName, weatherData, forecastData) {
   emptyElement(weatherDisplayEl);
   emptyElement(fiveDayDisplayEl);
-  weatherDisplayEl.append(buildWeatherCard(weatherData, locationName));
+  let currentConditionsEl = document.createElement("h2");
+  currentConditionsEl.classList.add("tile", "is-child");
+  currentConditionsEl.textContent = "Current Conditions";
 
+  let fiveDayEl = document.createElement("h2");
+  // fiveDayEl.classList.add("tile", "is-child");
+  fiveDayEl.textContent = "Five Day Forecast";
+
+  weatherDisplayEl.append(
+    currentConditionsEl,
+    buildWeatherCard(weatherData, locationName)
+  );
+
+  let appendCounter = 0;
   forecastData.list.forEach((timeslot) => {
     let time = timeslot.dt_txt.split(" ")[1];
 
     if (time.includes("12")) {
-      fiveDayDisplayEl.append(buildWeatherCard(timeslot));
+      if (appendCounter === 0) {
+        appendCounter++;
+        fiveDayDisplayEl.append(fiveDayEl, buildWeatherCard(timeslot));
+      } else {
+        fiveDayDisplayEl.append(buildWeatherCard(timeslot));
+      }
     }
   });
 }
@@ -170,29 +177,6 @@ function locationItem(itemData) {
   return item;
 }
 
-{
-  /* <div class="tile is-child card">
-  <header class="card-header">
-    <p class="card-header-title">PLACE AND DATE</p>
-    <div class="card-header-icon">
-      <span class="icon">
-        <i class="fa-sharp fa-solid fa-location-dot"></i>
-      </span>
-    </div>
-  </header>
-  <div class="card-content">
-    <div class="content">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
-      iaculis mauris.
-      <a href="#">@bulmaio</a>. <a href="#">#css</a>
-      <a href="#">#responsive</a>
-      <br />
-      <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-    </div>
-  </div>
-</div>; */
-}
-
 function buildWeatherCard(timeslot, locationName = "") {
   let title;
   let classNames = [];
@@ -210,7 +194,7 @@ function buildWeatherCard(timeslot, locationName = "") {
   // card header
   let cardHeaderEl = document.createElement("header");
   cardHeaderEl.classList.add("card-header");
-  let headerTitleEl = document.createElement("p");
+  let headerTitleEl = document.createElement("div");
   headerTitleEl.classList.add("card-header-title");
   headerTitleEl.textContent = title;
   let headerIconEl = document.createElement("div");
@@ -237,9 +221,9 @@ function buildWeatherCard(timeslot, locationName = "") {
     weatherImgEl.alt = element.description;
     weatherImgContainer.append(weatherImgEl);
   });
-  let tempEl = document.createElement("p");
+  let tempEl = document.createElement("div");
   tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}°C`;
-  let feelsLikeEl = document.createElement("p");
+  let feelsLikeEl = document.createElement("div");
   feelsLikeEl.textContent = `Feels like: ${Math.round(
     timeslot.main.feels_like
   )}°C`;
@@ -247,7 +231,7 @@ function buildWeatherCard(timeslot, locationName = "") {
   windEl.textContent = `Wind: ${getCompassDirection(
     timeslot.wind.deg
   )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
-  let humidityEl = document.createElement("p");
+  let humidityEl = document.createElement("div");
   humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
   let textContainer = document.createElement("div");
   textContainer.append(tempEl, feelsLikeEl, windEl, humidityEl);

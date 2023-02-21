@@ -1,5 +1,116 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
 
+.card-header-icon {
+  cursor: auto;
+}
+
+.hero {
+  background-image: url("../assets/sky.jpg");
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: cover;
+}
+
+@media screen and (min-width: 0px) {
+  #five-day-display {
+    display: unset;
+  }
+
+  #five-day-display .card-content,
+  #weather-display .card-content {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #five-day-display .card-content > div:nth-child(1) img {
+    height: 100px;
+  }
+
+  #five-day-display > h2 {
+    padding-left: 12px;
+  }
+
+  .column.is-one-third {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  #five-day-display {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #five-day-display > * {
+    flex-basis: 225px;
+  }
+
+  #five-day-display > h2 {
+    flex-basis: 100%;
+  }
+
+  #five-day-display .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #five-day-display
+    > div:nth-child(2)
+    #five-day-display
+    .card-content
+    > div:nth-child(1)
+    img {
+    height: 100px;
+  }
+
+  .column.is-one-third {
+    width: 50%;
+  }
+
+  .columns.is-desktop {
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  #five-day-display {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #five-day-display > * {
+    flex-basis: 225px;
+  }
+  #five-day-display > h2 {
+    flex-basis: 100%;
+    padding-left: 12px;
+  }
+
+  #five-day-display .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #five-day-display
+    > div:nth-child(2)
+    #five-day-display
+    .card-content
+    > div:nth-child(1)
+    img {
+    height: 100px;
+  }
+
+  .column.is-one-third {
+    width: 33.3333%;
+  }
+}
+
 /* .card-content {
   display: flex;
   flex-direction: row-reverse;
