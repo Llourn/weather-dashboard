@@ -9,7 +9,6 @@ let weatherDisplayEl = document.getElementById("weather-display");
 let fiveDayDisplayEl = document.getElementById("five-day-display");
 let clearSearchEl = document.getElementById("clear-search");
 let modalEl = document.getElementById("modal");
-let modalBackgroundEl = document.getElementById("modal-background");
 
 let locationList = [];
 
@@ -31,23 +30,25 @@ searchResultsEl.addEventListener("click", (event) => {
     lat: event.target.dataset.lat,
   };
 
-  if (isAlreadyInLocationList(location)) {
-    // do nothing
+  let existingLocationIndex = isAlreadyInLocationList(location);
+  console.log(existingLocationIndex);
+  if (existingLocationIndex >= 0) {
+    highlightLocationEntry(existingLocationIndex, "error");
+    emptyElement(searchResultsEl, ".dynamic");
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
     // Add this city to history list
-
-    getWeather(event.target);
-
     locationList.push(location);
     renderLocationListItems();
+    highlightLocationEntry(locationList.length - 1, "new");
     // get weather info for this location
     emptyElement(searchResultsEl, ".dynamic");
     updateLocalStorage();
   }
+  getWeather(event.target);
 });
 
 locationContainerEl.addEventListener("click", (event) => {
-  const index = event.target.dataset.locationIndex;
+  const index = event.target.parentElement.dataset.locationIndex;
 
   if (index >= 0) {
     locationList.splice(index, 1);
@@ -104,15 +105,16 @@ async function getWeather(location) {
 function renderSearchResults(searchResults) {
   emptyElement(searchResultsEl, ".dynamic");
 
-  let hr = document.createElement("hr");
-  hr.classList.add("dynamic");
-  searchResultsEl.append(hr);
-
   if (!searchResults.length) {
     modalOpen(
       "There are no results to display. Please re-enter the location and try again."
     );
+    return;
   }
+
+  let hr = document.createElement("hr");
+  hr.classList.add("dynamic");
+  searchResultsEl.append(hr);
 
   let cleanedResults = removeDuplicateSearchResults(searchResults);
   cleanedResults.forEach((result) => {
@@ -177,6 +179,7 @@ function locationItem(itemData, index) {
   item.classList.add("panel-block", "is-active");
   item.setAttribute("data-lon", itemData.lon);
   item.setAttribute("data-lat", itemData.lat);
+  item.dataset.locationIndex = index;
   let leadingIcon = document.createElement("span");
   leadingIcon.classList.add("panel-icon");
   let leadingIconImg = document.createElement("i");
@@ -185,7 +188,6 @@ function locationItem(itemData, index) {
   itemName.textContent = itemData.name;
   let deleteIcon = document.createElement("span");
   deleteIcon.classList.add("panel-icon", "delete");
-  deleteIcon.dataset.locationIndex = index;
   // let deleteIconImg = document.createElement("i");
   // deleteIconImg.classList.add("fa-sharp", "fa-solid", "fa-xmark");
 
@@ -382,9 +384,7 @@ function getCompassDirection(directionInDegrees) {
 }
 
 function isAlreadyInLocationList(location) {
-  return locationList.find((entry) => {
-    return entry.name === location.name;
-  });
+  return locationList.findIndex((entry) => entry.name === location.name);
 }
 
 function modalOpen(message) {
@@ -396,4 +396,18 @@ function modalOpen(message) {
 
 function modalClose() {
   modalEl.classList.remove("is-active");
+}
+
+function highlightLocationEntry(index, state) {
+  let entries = locationContainerEl.querySelectorAll("[data-location-index]");
+  if (entries) {
+    entries.forEach((entry) => {
+      entry.classList.remove(`shine-${state}`);
+      setTimeout(() => {
+        if (entry.dataset.locationIndex == index) {
+          entry.classList.add(`shine-${state}`);
+        }
+      }, 1);
+    });
+  }
 }
