@@ -4,11 +4,41 @@
   cursor: auto;
 }
 
-.hero {
+.hero-section {
   background-image: url("../assets/sky.jpg");
   background-repeat: no-repeat;
   background-position: right;
   background-size: cover;
+  position: relative;
+  height: clamp(10rem, 17vw, 20rem);
+}
+
+.hero-section-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(
+    to top right,
+    rgb(0, 214, 210) 0%,
+    rgba(126, 76, 134, 0) 59%
+  );
+}
+
+.hero-section-body .title {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  font-size: clamp(2rem, 10vw, 4rem);
+  color: aliceblue;
+  z-index: 1;
+  /* -webkit-text-stroke: 1px #0090e6; */
+  /* text-stroke: 1px #0090e6; */
+}
+
+.modal-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 a.panel-block {

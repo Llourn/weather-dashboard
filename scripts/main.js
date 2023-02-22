@@ -8,23 +8,23 @@ let locationContainerEl = document.getElementById("location-container");
 let weatherDisplayEl = document.getElementById("weather-display");
 let fiveDayDisplayEl = document.getElementById("five-day-display");
 let clearSearchEl = document.getElementById("clear-search");
+let modalEl = document.getElementById("modal");
+let modalBackgroundEl = document.getElementById("modal-background");
 
 let locationList = [];
 
 searchFormEl.addEventListener("submit", (event) => {
   event.preventDefault();
-  console.log("SUBMIT");
-  console.log(event.target);
   submitSearchForm(event.target);
 });
 
 clearSearchEl.addEventListener("click", (event) => {
   event.preventDefault();
   searchFormEl.reset();
+  emptyElement(searchResultsEl);
 });
 
 searchResultsEl.addEventListener("click", (event) => {
-  console.log("CLICK");
   let location = {
     name: event.target.textContent,
     lon: event.target.dataset.lon,
@@ -32,8 +32,7 @@ searchResultsEl.addEventListener("click", (event) => {
   };
 
   if (isAlreadyInLocationList(location)) {
-    console.log("ALREADY EXISTS");
-    // TODO Add a modal to notify the user.
+    // do nothing
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
     // Add this city to history list
 
@@ -48,18 +47,19 @@ searchResultsEl.addEventListener("click", (event) => {
 });
 
 locationContainerEl.addEventListener("click", (event) => {
-  console.log(event.target);
-  console.log("location list, 43");
   const index = event.target.dataset.locationIndex;
-  console.log(index);
+
   if (index >= 0) {
     locationList.splice(index, 1);
     updateLocalStorage();
     renderLocationListItems();
   } else if (event.target.dataset.lon && event.target.dataset.lat) {
-    console.log(event.target.dataset.lon, event.target.dataset.lat);
     getWeather(event.target);
   }
+});
+
+modalEl.addEventListener("click", () => {
+  modalClose();
 });
 
 function init() {
@@ -78,14 +78,12 @@ async function submitSearchForm(form) {
   var searchResults = [];
   // const formData = Object.fromEntries(new FormData(form).entries());
   const formData = form.querySelector('input[name="search-field"]');
-  console.log("Test complete.", formData.value);
-  console.log(searchFormEl === form);
+
   if (containsInvalidCharacters(formData.value)) {
-    console.log("Invalid Characters");
     return;
   }
   searchResults = await fetchCoords(formData.value);
-  console.log(searchResults);
+
   renderSearchResults(searchResults);
   form.reset();
 }
@@ -109,12 +107,11 @@ function renderSearchResults(searchResults) {
   let hr = document.createElement("hr");
   hr.classList.add("dynamic");
   searchResultsEl.append(hr);
-  console.log(searchResults.length);
+
   if (!searchResults.length) {
-    let warning = document.createElement("div");
-    warning.classList.add("is-warning", "notification", "dynamic");
-    warning.textContent = "No results to display. Try again.";
-    searchResultsEl.append(warning);
+    modalOpen(
+      "There are no results to display. Please re-enter the location and try again."
+    );
   }
 
   let cleanedResults = removeDuplicateSearchResults(searchResults);
@@ -338,7 +335,6 @@ function removeDuplicateSearchResults(arr) {
 }
 
 function emptyElement(targetElement, selector = "*") {
-  console.log("EMPTY", targetElement, selector);
   targetElement
     .querySelectorAll(selector)
     .forEach((element) => element.remove());
@@ -389,4 +385,15 @@ function isAlreadyInLocationList(location) {
   return locationList.find((entry) => {
     return entry.name === location.name;
   });
+}
+
+function modalOpen(message) {
+  let textContainer = document.getElementById("modal-text");
+  console.log(textContainer);
+  textContainer.textContent = message;
+  modalEl.classList.add("is-active");
+}
+
+function modalClose() {
+  modalEl.classList.remove("is-active");
 }

@@ -12,8 +12,9 @@
     ></script>
   </head>
   <body>
-    <section class="hero is-medium">
-      <div class="hero-body">
+    <section class="hero-section">
+      <div class="hero-section-overlay"></div>
+      <div class="hero-section-body">
         <p class="title">Weather Dashboard</p>
         <!-- <p class="subtitle">Hero subtitle</p> -->
       </div>
@@ -129,6 +130,22 @@
         </p>
       </div>
     </footer>
+
+    <div id="modal" class="modal is-active">
+      <div id="modal-background" class="modal-background"></div>
+      <div class="modal-content notification is-warning">
+        <div class="modal-icon">
+          <i class="fa-solid fa-triangle-exclamation fa-2xl"></i>
+        </div>
+        <div id="modal-text" class="modal-text">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fuga
+          nobis illo quasi distinctio voluptatibus accusamus ex aliquam nihil
+          ut, voluptatem praesentium cumque. Laboriosam, at consectetur iste
+          distinctio voluptate repudiandae!
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script type="module" src="./scripts/main.js"></script>
