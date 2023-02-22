@@ -147,9 +147,16 @@ function renderSearchResults(searchResults) {
 
 function renderLocationListItems() {
   emptyElement(locationContainerEl, "a");
-  locationList.forEach((location, index) => {
-    locationContainerEl.append(locationItem(location, index));
-  });
+  if (locationList.length > 0) {
+    locationList.forEach((location, index) => {
+      locationContainerEl.append(locationItem(location, index));
+    });
+  } else {
+    let defaultView = document.createElement("a");
+    defaultView.classList.add("panel-block", "is-active");
+    defaultView.textContent = "Locations you searched for will show up here!";
+    locationContainerEl.append(defaultView);
+  }
 }
 
 function renderWeather(locationName, weatherData, forecastData) {
