@@ -9,6 +9,7 @@ let weatherDisplayEl = document.getElementById("weather-display");
 let fiveDayDisplayEl = document.getElementById("five-day-display");
 let clearSearchEl = document.getElementById("clear-search");
 let modalEl = document.getElementById("modal");
+let loadingEl = document.getElementById("loading");
 
 let locationList = [];
 
@@ -90,6 +91,9 @@ async function submitSearchForm(form) {
 }
 
 async function getWeather(location) {
+  emptyElement(weatherDisplayEl);
+  emptyElement(fiveDayDisplayEl);
+  showLoading();
   let weatherData = await fetchWeather(
     location.dataset.lat,
     location.dataset.lon
@@ -99,7 +103,12 @@ async function getWeather(location) {
     location.dataset.lat,
     location.dataset.lon
   );
-  renderWeather(location.textContent, weatherData, forecastData);
+
+  setTimeout(() => {
+    // I only did this so people could admire the rain cloud I made. 🌧️
+    renderWeather(location.textContent, weatherData, forecastData);
+    hideLoading();
+  }, 1000);
 }
 
 function renderSearchResults(searchResults) {
@@ -410,4 +419,12 @@ function highlightLocationEntry(index, state) {
       }, 1);
     });
   }
+}
+
+function showLoading() {
+  loadingEl.classList.add("is-active");
+}
+
+function hideLoading() {
+  loadingEl.classList.remove("is-active");
 }

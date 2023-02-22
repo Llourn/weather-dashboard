@@ -76,10 +76,18 @@ a.panel-block span:nth-child(3) {
 }
 
 .rain-cloud {
+  display: none;
+}
+
+.rain-cloud.is-active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 30%;
   max-width: 300px;
   aspect-ratio: 1 / 1;
   margin: auto;
+  height: 100%;
 }
 
 #raindrop_1 {
