@@ -1,0 +1,437 @@
+import { fetchCoords, fetchForecast, fetchWeather } from "./fetchers.js";
+
+let dayjsObj = dayjs();
+
+let searchFormEl = document.getElementById("search-form");
+let searchResultsEl = document.getElementById("search-results");
+let locationContainerEl = document.getElementById("location-container");
+let weatherDisplayEl = document.getElementById("weather-display");
+let fiveDayDisplayEl = document.getElementById("five-day-display");
+let clearSearchEl = document.getElementById("clear-search");
+let modalEl = document.getElementById("modal");
+let loadingEl = document.getElementById("loading");
+
+let locationList = [];
+
+searchFormEl.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitSearchForm(event.target);
+});
+
+clearSearchEl.addEventListener("click", (event) => {
+  event.preventDefault();
+  searchFormEl.reset();
+  emptyElement(searchResultsEl);
+});
+
+searchResultsEl.addEventListener("click", (event) => {
+  let location = {
+    name: event.target.textContent,
+    lon: event.target.dataset.lon,
+    lat: event.target.dataset.lat,
+  };
+
+  let existingLocationIndex = isAlreadyInLocationList(location);
+  console.log(existingLocationIndex);
+  if (existingLocationIndex >= 0) {
+    highlightLocationEntry(existingLocationIndex, "error");
+    emptyElement(searchResultsEl, ".dynamic");
+  } else if (event.target.dataset.lon && event.target.dataset.lat) {
+    // Add this city to history list
+    locationList.push(location);
+    renderLocationListItems();
+    highlightLocationEntry(locationList.length - 1, "new");
+    // get weather info for this location
+    emptyElement(searchResultsEl, ".dynamic");
+    updateLocalStorage();
+  }
+  getWeather(event.target);
+});
+
+locationContainerEl.addEventListener("click", (event) => {
+  const index = event.target.parentElement.dataset.locationIndex;
+
+  if (index >= 0) {
+    locationList.splice(index, 1);
+    updateLocalStorage();
+    renderLocationListItems();
+  } else if (event.target.dataset.lon && event.target.dataset.lat) {
+    getWeather(event.target);
+  }
+});
+
+modalEl.addEventListener("click", () => {
+  modalClose();
+});
+
+function init() {
+  locationList = JSON.parse(localStorage.getItem("locationList"));
+
+  if (locationList) {
+    renderLocationListItems();
+  } else {
+    locationList = [];
+  }
+}
+
+init();
+
+async function submitSearchForm(form) {
+  var searchResults = [];
+  // const formData = Object.fromEntries(new FormData(form).entries());
+  const formData = form.querySelector('input[name="search-field"]');
+
+  if (containsInvalidCharacters(formData.value)) {
+    return;
+  }
+  searchResults = await fetchCoords(formData.value);
+
+  renderSearchResults(searchResults);
+  form.reset();
+}
+
+async function getWeather(location) {
+  emptyElement(weatherDisplayEl);
+  emptyElement(fiveDayDisplayEl);
+  showLoading();
+  let weatherData = await fetchWeather(
+    location.dataset.lat,
+    location.dataset.lon
+  );
+
+  let forecastData = await fetchForecast(
+    location.dataset.lat,
+    location.dataset.lon
+  );
+
+  setTimeout(() => {
+    // I only did this so people could admire the rain cloud I made. 🌧️
+    renderWeather(location.textContent, weatherData, forecastData);
+    hideLoading();
+  }, 1000);
+}
+
+function renderSearchResults(searchResults) {
+  emptyElement(searchResultsEl, ".dynamic");
+
+  if (!searchResults.length) {
+    modalOpen(
+      "There are no results to display. Please re-enter the location and try again."
+    );
+    return;
+  }
+
+  let hr = document.createElement("hr");
+  hr.classList.add("dynamic");
+  searchResultsEl.append(hr);
+
+  let cleanedResults = removeDuplicateSearchResults(searchResults);
+  cleanedResults.forEach((result) => {
+    let locationData = locationDataObj(result);
+    let button = document.createElement("button");
+    button.classList.add(
+      "dynamic",
+      "field",
+      "button",
+      "is-fullwidth",
+      "is-primary",
+      "is-outlined"
+    );
+    button.type = "button";
+    button.textContent = locationData.name;
+    button.dataset.lon = locationData.lon;
+    button.dataset.lat = locationData.lat;
+    searchResultsEl.append(button);
+  });
+}
+
+function renderLocationListItems() {
+  emptyElement(locationContainerEl, "a");
+  if (locationList.length > 0) {
+    locationList.forEach((location, index) => {
+      locationContainerEl.append(locationItem(location, index));
+    });
+  } else {
+    let defaultView = document.createElement("a");
+    defaultView.classList.add("panel-block", "is-active");
+    defaultView.textContent = "Locations you searched for will show up here!";
+    locationContainerEl.append(defaultView);
+  }
+}
+
+function renderWeather(locationName, weatherData, forecastData) {
+  emptyElement(weatherDisplayEl);
+  emptyElement(fiveDayDisplayEl);
+  let currentConditionsEl = document.createElement("h2");
+  currentConditionsEl.classList.add("tile", "is-child");
+  currentConditionsEl.textContent = "Current Conditions";
+
+  let fiveDayEl = document.createElement("h2");
+  // fiveDayEl.classList.add("tile", "is-child");
+  fiveDayEl.textContent = "Five Day Forecast";
+
+  weatherDisplayEl.append(
+    currentConditionsEl,
+    buildWeatherCard(weatherData, locationName)
+  );
+
+  let appendCounter = 0;
+  forecastData.list.forEach((timeslot) => {
+    let time = timeslot.dt_txt.split(" ")[1];
+
+    if (time.includes("12")) {
+      if (appendCounter === 0) {
+        appendCounter++;
+        fiveDayDisplayEl.append(fiveDayEl, buildWeatherCard(timeslot));
+      } else {
+        fiveDayDisplayEl.append(buildWeatherCard(timeslot));
+      }
+    }
+  });
+}
+
+function locationItem(itemData, index) {
+  let item = document.createElement("a");
+  item.classList.add("panel-block", "is-active");
+  item.setAttribute("data-lon", itemData.lon);
+  item.setAttribute("data-lat", itemData.lat);
+  item.dataset.locationIndex = index;
+  let leadingIcon = document.createElement("span");
+  leadingIcon.classList.add("panel-icon");
+  let leadingIconImg = document.createElement("i");
+  leadingIconImg.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
+  let itemName = document.createElement("span");
+  itemName.textContent = itemData.name;
+  let deleteIcon = document.createElement("span");
+  deleteIcon.classList.add("panel-icon", "delete");
+  // let deleteIconImg = document.createElement("i");
+  // deleteIconImg.classList.add("fa-sharp", "fa-solid", "fa-xmark");
+
+  leadingIcon.append(leadingIconImg);
+  // deleteIcon.append(deleteIconImg);
+  item.append(leadingIcon, itemName, deleteIcon);
+  return item;
+}
+
+function buildWeatherCard(timeslot, locationName = "") {
+  let title;
+  let classNames = [];
+  if (locationName) {
+    classNames.push("todays-weather");
+    title = `${locationName} (${dayjsObj.format("dddd D MMM YYYY")})`;
+  } else {
+    classNames.push("five-day-weather");
+    let day = timeslot.dt_txt.split(" ")[0].split("-");
+    title = `${day[1]}/${day[2]}/${day[0]}`;
+  }
+
+  let weatherCardEl = document.createElement("div");
+  weatherCardEl.classList.add("tile", "is-child", "card", ...classNames);
+  // card header
+  let cardHeaderEl = document.createElement("header");
+  cardHeaderEl.classList.add("card-header");
+  let headerTitleEl = document.createElement("div");
+  headerTitleEl.classList.add("card-header-title");
+  headerTitleEl.textContent = title;
+  let headerIconEl = document.createElement("div");
+  if (locationName) {
+    headerIconEl.classList.add("card-header-icon");
+    let iconEl = document.createElement("span");
+    iconEl.classList.add("icon");
+    let iconImgEl = document.createElement("i");
+    iconImgEl.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
+    iconEl.append(iconImgEl);
+    headerIconEl.append(iconEl);
+  }
+  cardHeaderEl.append(headerTitleEl, headerIconEl);
+
+  // card content
+  let cardContentEl = document.createElement("div");
+  cardContentEl.classList.add("card-content");
+  let contentEl = document.createElement("div");
+  contentEl.classList.add("content");
+  let weatherImgContainer = document.createElement("div");
+  timeslot.weather.forEach((element) => {
+    let weatherImgEl = document.createElement("img");
+    weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@4x.png`;
+    weatherImgEl.alt = element.description;
+    weatherImgContainer.append(weatherImgEl);
+  });
+  let tempEl = document.createElement("div");
+  tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}°C`;
+  let feelsLikeEl = document.createElement("div");
+  feelsLikeEl.textContent = `Feels like: ${Math.round(
+    timeslot.main.feels_like
+  )}°C`;
+  let windEl = document.createElement("div");
+  windEl.textContent = `Wind: ${getCompassDirection(
+    timeslot.wind.deg
+  )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
+  let humidityEl = document.createElement("div");
+  humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
+  let textContainer = document.createElement("div");
+  textContainer.append(tempEl, feelsLikeEl, windEl, humidityEl);
+  cardContentEl.append(weatherImgContainer, textContainer);
+
+  weatherCardEl.append(cardHeaderEl, cardContentEl);
+
+  if (locationName) {
+    return weatherCardEl;
+  } else {
+    let parentEl = document.createElement("div");
+    parentEl.classList.add("tile", "is-parent");
+    parentEl.append(weatherCardEl);
+    return parentEl;
+  }
+}
+
+function buildFiveDayCard(timeslot, locationName = "") {
+  let title;
+  let classNames = ["column"];
+  if (locationName) {
+    classNames.push("todays-weather");
+    title = `${locationName} (${dayjsObj.format("dddd D MMM YYYY")})`;
+  } else {
+    classNames.push("five-day-weather");
+    let day = timeslot.dt_txt.split(" ")[0].split("-");
+    title = `${day[1]}/${day[2]}/${day[0]}`;
+  }
+
+  let weatherEl = document.createElement("div");
+  weatherEl.classList.add(...classNames);
+  let titleEl = document.createElement("p");
+  titleEl.textContent = title;
+  let weatherImgContainer = document.createElement("div");
+
+  timeslot.weather.forEach((element) => {
+    let weatherImgEl = document.createElement("img");
+    weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@2x.png`;
+    weatherImgEl.alt = element.description;
+    weatherImgContainer.append(weatherImgEl);
+  });
+  let tempEl = document.createElement("p");
+  tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}`;
+  let feelsLikeEl = document.createElement("p");
+  feelsLikeEl.textContent = `Feels like: ${Math.round(
+    timeslot.main.feels_like
+  )}`;
+  let windEl = document.createElement("div");
+  windEl.textContent = `Wind: ${getCompassDirection(
+    timeslot.wind.deg
+  )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
+  let humidityEl = document.createElement("p");
+  humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
+
+  weatherEl.append(
+    titleEl,
+    weatherImgContainer,
+    tempEl,
+    feelsLikeEl,
+    windEl,
+    humidityEl
+  );
+
+  return weatherEl;
+}
+
+function containsInvalidCharacters(search) {
+  return /([0-9])+|,|\.|&/.test(search);
+}
+
+function removeDuplicateSearchResults(arr) {
+  let newArr = arr.filter(
+    (value, index, self) =>
+      index ===
+      self.findIndex(
+        (t) =>
+          t.name === value.name &&
+          t.state === value.state &&
+          t.country === value.country
+      )
+  );
+  return newArr;
+}
+
+function emptyElement(targetElement, selector = "*") {
+  targetElement
+    .querySelectorAll(selector)
+    .forEach((element) => element.remove());
+}
+
+function updateLocalStorage() {
+  localStorage.setItem("locationList", JSON.stringify(locationList));
+}
+
+function locationDataObj(data) {
+  let name = "";
+  if (data.name) name += data.name;
+  if (data.state) name += `, ${data.state}`;
+  if (data.country) name += `, ${data.country}`;
+
+  return {
+    name: name,
+    lon: data.lon,
+    lat: data.lat,
+  };
+}
+
+function getCompassDirection(directionInDegrees) {
+  let directionCodes = [
+    "N",
+    "NNE",
+    "NE",
+    "ENE",
+    "E",
+    "ESE",
+    "SE",
+    "SSE",
+    "S",
+    "SSW",
+    "SW",
+    "WSW",
+    "W",
+    "WNW",
+    "NW",
+    "NNW",
+    "N",
+  ];
+  let index = Math.round(directionInDegrees / 22.5);
+  return directionCodes[index];
+}
+
+function isAlreadyInLocationList(location) {
+  return locationList.findIndex((entry) => entry.name === location.name);
+}
+
+function modalOpen(message) {
+  let textContainer = document.getElementById("modal-text");
+  console.log(textContainer);
+  textContainer.textContent = message;
+  modalEl.classList.add("is-active");
+}
+
+function modalClose() {
+  modalEl.classList.remove("is-active");
+}
+
+function highlightLocationEntry(index, state) {
+  let entries = locationContainerEl.querySelectorAll("[data-location-index]");
+  if (entries) {
+    entries.forEach((entry) => {
+      entry.classList.remove(`shine-${state}`);
+      setTimeout(() => {
+        if (entry.dataset.locationIndex == index) {
+          entry.classList.add(`shine-${state}`);
+        }
+      }, 1);
+    });
+  }
+}
+
+function showLoading() {
+  loadingEl.classList.add("is-active");
+}
+
+function hideLoading() {
+  loadingEl.classList.remove("is-active");
+}
