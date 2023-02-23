@@ -1,9 +1,12 @@
 import { emptyElement } from "../utilities/general";
 import { locationList } from "../main";
 
+let locationContainerEl;
+
 export function init() {
   console.log("Locations init");
   console.log(locationContainerEl);
+  locationContainerEl = document.getElementById("location-container");
 
   locationContainerEl.addEventListener("click", (event) => {
     const index = event.target.parentElement.dataset.locationIndex;

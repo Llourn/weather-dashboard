@@ -1,5 +1,8 @@
+let modalEl;
+
 export function init() {
   console.log("Modal init");
+  modalEl = document.getElementById("modal");
 
   modalEl.addEventListener("click", () => {
     modalClose();

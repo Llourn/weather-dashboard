@@ -1,8 +1,14 @@
 import { fetchCoords } from "../utilities/fetchers";
 import { emptyElement } from "../utilities/general";
+let searchFormEl;
+let searchResultsEl;
+let clearSearchEl;
 
 export function init() {
   console.log("Search init");
+  searchFormEl = document.getElementById("search-form");
+  searchResultsEl = document.getElementById("search-results");
+  clearSearchEl = document.getElementById("clear-search");
 
   searchFormEl.addEventListener("submit", (event) => {
     event.preventDefault();
