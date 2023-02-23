@@ -12,15 +12,18 @@
     ></script>
   </head>
   <body>
-    <section class="hero-section">
+    <!-- Hero section -->
+    <header class="hero-section">
       <div class="hero-section-overlay"></div>
       <div class="hero-section-body">
         <p class="title">Weather Dashboard</p>
-        <!-- <p class="subtitle">Hero subtitle</p> -->
       </div>
-    </section>
-    <div class="columns is-desktop">
+    </header>
+    <!-- Main content section -->
+    <main class="columns is-desktop">
+      <!-- Search and location history -->
       <div class="column is-one-third">
+        <!-- Search form and search results display -->
         <div class="tile is-parent">
           <div class="tile is-child box">
             <form id="search-form" class="field" action="">
@@ -52,6 +55,7 @@
             <div id="search-results"></div>
           </div>
         </div>
+        <!-- Location history -->
         <div class="tile is-parent">
           <div id="location-container" class="tile is-child panel is-primary">
             <p class="panel-heading">Locations</p>
@@ -61,7 +65,9 @@
           </div>
         </div>
       </div>
+      <!-- Weather content section -->
       <div class="column">
+        <!-- Loading animation -->
         <div id="loading" class="rain-cloud">
           <svg
             version="1.1"
@@ -176,6 +182,7 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
           </svg>
         </div>
         <div class="tile is-vertical">
+          <!-- Today's weather -->
           <div id="weather-display" class="tile is-parent is-vertical content">
             <div class="tile is-child box">
               <h2>Instructions</h2>
@@ -192,10 +199,11 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
               <p>Enjoy! 🌞</p>
             </div>
           </div>
+          <!-- Five day forecast -->
           <div id="five-day-display" class="tile content"></div>
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- <div id="toast" class="container is-max-desktop">
       <div class="notification is-warning">
