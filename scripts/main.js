@@ -1,17 +1,15 @@
 import "bulma/css/bulma.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "../styles/style.css";
+window.locationList = [];
 
-import dayjs from "dayjs";
 import {
   init as locationsInit,
   renderLocationListItems,
 } from "./components/locations";
-import { fetchForecast, fetchWeather } from "./utilities/fetchers.js";
 import { init as searchInit } from "./components/search";
 import { init as modalInit } from "./components/modal";
-
-import { emptyElement } from "./utilities/general";
+import { init as weatherInit } from "./components/weather";
 
 document.querySelector("#app").innerHTML = /*html*/ `
   <!-- Hero section -->
@@ -246,21 +244,10 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
   </div>
 `;
 
-let loadingEl = document.getElementById("loading");
-let modalEl = document.getElementById("modal");
-let locationContainerEl = document.getElementById("location-container");
-let searchFormEl = document.getElementById("search-form");
-let searchResultsEl = document.getElementById("search-results");
-let clearSearchEl = document.getElementById("clear-search");
-let weatherDisplayEl = document.getElementById("weather-display");
-let fiveDayDisplayEl = document.getElementById("five-day-display");
-
-const dayjsObj = dayjs();
-export let locationList = [];
-
-searchInit(searchFormEl, searchResultsEl, clearSearchEl);
-locationsInit(locationContainerEl);
-modalInit(modalEl);
+searchInit();
+locationsInit();
+modalInit();
+weatherInit();
 
 function init() {
   console.log("Main init");
@@ -274,243 +261,3 @@ function init() {
 }
 
 init();
-
-async function getWeather(location) {
-  emptyElement(weatherDisplayEl);
-  emptyElement(fiveDayDisplayEl);
-  showLoading();
-  let weatherData = await fetchWeather(
-    location.dataset.lat,
-    location.dataset.lon
-  );
-
-  let forecastData = await fetchForecast(
-    location.dataset.lat,
-    location.dataset.lon
-  );
-
-  setTimeout(() => {
-    // I only did this so people could admire the rain cloud I made. 🌧️
-    renderWeather(location.textContent, weatherData, forecastData);
-    hideLoading();
-  }, 1000);
-}
-
-function renderWeather(locationName, weatherData, forecastData) {
-  emptyElement(weatherDisplayEl);
-  emptyElement(fiveDayDisplayEl);
-  let currentConditionsEl = document.createElement("h2");
-  currentConditionsEl.classList.add("tile", "is-child");
-  currentConditionsEl.textContent = "Current Conditions";
-
-  let fiveDayEl = document.createElement("h2");
-  // fiveDayEl.classList.add("tile", "is-child");
-  fiveDayEl.textContent = "Five Day Forecast";
-
-  weatherDisplayEl.append(
-    currentConditionsEl,
-    buildWeatherCard(weatherData, locationName)
-  );
-
-  let appendCounter = 0;
-  forecastData.list.forEach((timeslot) => {
-    let time = timeslot.dt_txt.split(" ")[1];
-
-    if (time.includes("12")) {
-      if (appendCounter === 0) {
-        appendCounter++;
-        fiveDayDisplayEl.append(fiveDayEl, buildWeatherCard(timeslot));
-      } else {
-        fiveDayDisplayEl.append(buildWeatherCard(timeslot));
-      }
-    }
-  });
-}
-
-function locationItem(itemData, index) {
-  let item = document.createElement("a");
-  item.classList.add("panel-block", "is-active");
-  item.setAttribute("data-lon", itemData.lon);
-  item.setAttribute("data-lat", itemData.lat);
-  item.dataset.locationIndex = index;
-  let leadingIcon = document.createElement("span");
-  leadingIcon.classList.add("panel-icon");
-  let leadingIconImg = document.createElement("i");
-  leadingIconImg.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
-  let itemName = document.createElement("span");
-  itemName.textContent = itemData.name;
-  let deleteIcon = document.createElement("span");
-  deleteIcon.classList.add("panel-icon", "delete");
-  // let deleteIconImg = document.createElement("i");
-  // deleteIconImg.classList.add("fa-sharp", "fa-solid", "fa-xmark");
-
-  leadingIcon.append(leadingIconImg);
-  // deleteIcon.append(deleteIconImg);
-  item.append(leadingIcon, itemName, deleteIcon);
-  return item;
-}
-
-function buildWeatherCard(timeslot, locationName = "") {
-  let title;
-  let classNames = [];
-  if (locationName) {
-    classNames.push("todays-weather");
-    title = `${locationName} (${dayjsObj.format("dddd D MMM YYYY")})`;
-  } else {
-    classNames.push("five-day-weather");
-    let day = timeslot.dt_txt.split(" ")[0].split("-");
-    title = `${day[1]}/${day[2]}/${day[0]}`;
-  }
-
-  let weatherCardEl = document.createElement("div");
-  weatherCardEl.classList.add("tile", "is-child", "card", ...classNames);
-  // card header
-  let cardHeaderEl = document.createElement("header");
-  cardHeaderEl.classList.add("card-header");
-  let headerTitleEl = document.createElement("div");
-  headerTitleEl.classList.add("card-header-title");
-  headerTitleEl.textContent = title;
-  let headerIconEl = document.createElement("div");
-  if (locationName) {
-    headerIconEl.classList.add("card-header-icon");
-    let iconEl = document.createElement("span");
-    iconEl.classList.add("icon");
-    let iconImgEl = document.createElement("i");
-    iconImgEl.classList.add("fa-sharp", "fa-solid", "fa-location-dot");
-    iconEl.append(iconImgEl);
-    headerIconEl.append(iconEl);
-  }
-  cardHeaderEl.append(headerTitleEl, headerIconEl);
-
-  // card content
-  let cardContentEl = document.createElement("div");
-  cardContentEl.classList.add("card-content");
-  let contentEl = document.createElement("div");
-  contentEl.classList.add("content");
-  let weatherImgContainer = document.createElement("div");
-  timeslot.weather.forEach((element) => {
-    let weatherImgEl = document.createElement("img");
-    weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@4x.png`;
-    weatherImgEl.alt = element.description;
-    weatherImgContainer.append(weatherImgEl);
-  });
-  let tempEl = document.createElement("div");
-  tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}°C`;
-  let feelsLikeEl = document.createElement("div");
-  feelsLikeEl.textContent = `Feels like: ${Math.round(
-    timeslot.main.feels_like
-  )}°C`;
-  let windEl = document.createElement("div");
-  windEl.textContent = `Wind: ${getCompassDirection(
-    timeslot.wind.deg
-  )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
-  let humidityEl = document.createElement("div");
-  humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
-  let textContainer = document.createElement("div");
-  textContainer.append(tempEl, feelsLikeEl, windEl, humidityEl);
-  cardContentEl.append(weatherImgContainer, textContainer);
-
-  weatherCardEl.append(cardHeaderEl, cardContentEl);
-
-  if (locationName) {
-    return weatherCardEl;
-  } else {
-    let parentEl = document.createElement("div");
-    parentEl.classList.add("tile", "is-parent");
-    parentEl.append(weatherCardEl);
-    return parentEl;
-  }
-}
-
-function buildFiveDayCard(timeslot, locationName = "") {
-  let title;
-  let classNames = ["column"];
-  if (locationName) {
-    classNames.push("todays-weather");
-    title = `${locationName} (${dayjsObj.format("dddd D MMM YYYY")})`;
-  } else {
-    classNames.push("five-day-weather");
-    let day = timeslot.dt_txt.split(" ")[0].split("-");
-    title = `${day[1]}/${day[2]}/${day[0]}`;
-  }
-
-  let weatherEl = document.createElement("div");
-  weatherEl.classList.add(...classNames);
-  let titleEl = document.createElement("p");
-  titleEl.textContent = title;
-  let weatherImgContainer = document.createElement("div");
-
-  timeslot.weather.forEach((element) => {
-    let weatherImgEl = document.createElement("img");
-    weatherImgEl.src = `https://openweathermap.org/img/wn/${element.icon}@2x.png`;
-    weatherImgEl.alt = element.description;
-    weatherImgContainer.append(weatherImgEl);
-  });
-  let tempEl = document.createElement("p");
-  tempEl.textContent = `Temp: ${Math.round(timeslot.main.temp)}`;
-  let feelsLikeEl = document.createElement("p");
-  feelsLikeEl.textContent = `Feels like: ${Math.round(
-    timeslot.main.feels_like
-  )}`;
-  let windEl = document.createElement("div");
-  windEl.textContent = `Wind: ${getCompassDirection(
-    timeslot.wind.deg
-  )} ${Math.round(timeslot.wind.speed * 3.6)} km/h`;
-  let humidityEl = document.createElement("p");
-  humidityEl.textContent = `Humidity: ${timeslot.main.humidity}%`;
-
-  weatherEl.append(
-    titleEl,
-    weatherImgContainer,
-    tempEl,
-    feelsLikeEl,
-    windEl,
-    humidityEl
-  );
-
-  return weatherEl;
-}
-
-function getCompassDirection(directionInDegrees) {
-  let directionCodes = [
-    "N",
-    "NNE",
-    "NE",
-    "ENE",
-    "E",
-    "ESE",
-    "SE",
-    "SSE",
-    "S",
-    "SSW",
-    "SW",
-    "WSW",
-    "W",
-    "WNW",
-    "NW",
-    "NNW",
-    "N",
-  ];
-  let index = Math.round(directionInDegrees / 22.5);
-  return directionCodes[index];
-}
-
-// ORIGINAL CODE
-
-// document.querySelector('#app').innerHTML = `
-//   <div>
-//     <a href="https://vitejs.dev" target="_blank">
-//       <img src="/vite.svg" class="logo" alt="Vite logo" />
-//     </a>
-//     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-//       <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-//     </a>
-//     <h1>Hello Vite!</h1>
-//     <div class="card">
-//       <button id="counter" type="button"></button>
-//     </div>
-//     <p class="read-the-docs">
-//       Click on the Vite logo to learn more
-//     </p>
-//   </div>
-// `

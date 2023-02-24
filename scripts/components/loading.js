@@ -1,7 +1,8 @@
 let loadingEl;
 
-function init(loadingEl) {
-  this.loadingEl = loadingEl;
+function init() {
+  console.log("Loading init");
+  loadingEl = document.getElementById("loading");
 }
 
 function showLoading() {
