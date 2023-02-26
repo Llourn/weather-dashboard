@@ -1,7 +1,7 @@
 import "bulma/css/bulma.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "../styles/style.css";
-window.locationList = [];
+import { locationsData } from "./components/LocationList";
 
 import {
   init as locationsInit,
@@ -10,6 +10,7 @@ import {
 import { init as searchInit } from "./components/search";
 import { init as modalInit } from "./components/modal";
 import { init as weatherInit } from "./components/weather";
+import { init as loadingInit } from "./components/loading";
 
 document.querySelector("#app").innerHTML = /*html*/ `
   <!-- Hero section -->
@@ -244,20 +245,20 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
   </div>
 `;
 
+locationsData.init();
 searchInit();
 locationsInit();
 modalInit();
 weatherInit();
+loadingInit();
 
 function init() {
-  console.log("Main init");
-  locationList = JSON.parse(localStorage.getItem("locationList"));
-
-  if (locationList) {
-    renderLocationListItems();
-  } else {
-    locationList = [];
-  }
+  console.log("初める - Main init");
+  // if (locationList.locations) {
+  //   renderLocationListItems();
+  // } else {
+  //   locationList = [];
+  // }
 }
 
 init();

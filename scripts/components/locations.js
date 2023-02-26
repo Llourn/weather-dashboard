@@ -1,19 +1,22 @@
 import { emptyElement } from "../utilities/general";
-// import { locationList } from "../main";
+import { locationsData } from "./LocationList";
+import { getWeather } from "./weather";
 
 let locationContainerEl;
 
 export function init() {
-  console.log("Locations init");
-  // console.log(locationContainerEl);
+  console.log("初める - Locations init");
   locationContainerEl = document.getElementById("location-container");
 
+  renderLocationListItems();
   locationContainerEl.addEventListener("click", (event) => {
     const index = event.target.parentElement.dataset.locationIndex;
 
     if (index >= 0) {
-      locationList.splice(index, 1);
-      updateLocalStorage();
+      console.log("死ね！", index, locationsData.all());
+      let modList = locationsData.all();
+      modList.splice(index, 1);
+      locationsData.replace(modList);
       renderLocationListItems();
     } else if (event.target.dataset.lon && event.target.dataset.lat) {
       getWeather(event.target);
@@ -23,8 +26,8 @@ export function init() {
 
 export function renderLocationListItems() {
   emptyElement(locationContainerEl, "a");
-  if (locationList.length > 0) {
-    locationList.forEach((location, index) => {
+  if (locationsData.all().length > 0) {
+    locationsData.all().forEach((location, index) => {
       locationContainerEl.append(locationItem(location, index));
     });
   } else {
@@ -35,7 +38,8 @@ export function renderLocationListItems() {
   }
 }
 
-function highlightLocationEntry(index, state) {
+// TODO: maybe this should be somewhere else.
+export function highlightLocationEntry(index, state) {
   let entries = locationContainerEl.querySelectorAll("[data-location-index]");
   if (entries) {
     entries.forEach((entry) => {

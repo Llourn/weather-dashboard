@@ -1,7 +1,7 @@
 let modalEl;
 
 export function init() {
-  console.log("Modal init");
+  console.log("初める - Modal init");
   modalEl = document.getElementById("modal");
 
   modalEl.addEventListener("click", () => {
@@ -9,13 +9,12 @@ export function init() {
   });
 }
 
-function modalOpen(message) {
+export function modalOpen(message) {
   let textContainer = document.getElementById("modal-text");
-  console.log(textContainer);
   textContainer.textContent = message;
   modalEl.classList.add("is-active");
 }
 
-function modalClose() {
+export function modalClose() {
   modalEl.classList.remove("is-active");
 }

@@ -1,13 +1,20 @@
+import dayjs from "dayjs";
+import { fetchWeather, fetchForecast } from "../utilities/fetchers";
+import { emptyElement } from "../utilities/general";
+import { hideLoading, showLoading } from "./loading";
+
+let dayjsObj = dayjs();
+
 let weatherDisplayEl;
 let fiveDayDisplayEl;
 
 export function init() {
-  console.log("Weather init");
+  console.log("初める - Weather init");
   weatherDisplayEl = document.getElementById("weather-display");
   fiveDayDisplayEl = document.getElementById("five-day-display");
 }
 
-async function getWeather(location) {
+export async function getWeather(location) {
   emptyElement(weatherDisplayEl);
   emptyElement(fiveDayDisplayEl);
   showLoading();
@@ -36,7 +43,6 @@ function renderWeather(locationName, weatherData, forecastData) {
   currentConditionsEl.textContent = "Current Conditions";
 
   let fiveDayEl = document.createElement("h2");
-  // fiveDayEl.classList.add("tile", "is-child");
   fiveDayEl.textContent = "Five Day Forecast";
 
   weatherDisplayEl.append(

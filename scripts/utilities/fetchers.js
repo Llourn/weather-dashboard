@@ -21,12 +21,25 @@ async function fetchForecast(lat, lon) {
 }
 
 async function fetchCoords(cityName) {
-  let limit = 15;
+  let limit = 5;
   let url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${apiKey}`;
+  let response;
 
-  let response = await fetch(url);
+  try {
+    response = await fetch(url);
+    if (!response?.ok) {
+      if (!cityName?.length) {
+        throw Error("No location provided.");
+      } else {
+        throw Error("There was a problem processing your request.");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   let data = [];
-  if (response.ok) {
+  if (response?.ok) {
     data = await response.json();
   }
 

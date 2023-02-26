@@ -1,14 +1,14 @@
 let loadingEl;
 
-function init() {
-  console.log("Loading init");
+export function init() {
+  console.log("初める - Loading init");
   loadingEl = document.getElementById("loading");
 }
 
-function showLoading() {
+export function showLoading() {
   loadingEl.classList.add("is-active");
 }
 
-function hideLoading() {
+export function hideLoading() {
   loadingEl.classList.remove("is-active");
 }

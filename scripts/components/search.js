@@ -1,19 +1,21 @@
 import { fetchCoords } from "../utilities/fetchers";
 import { emptyElement } from "../utilities/general";
+import { locationsData } from "./LocationList";
+import { renderLocationListItems, highlightLocationEntry } from "./locations";
+import { getWeather } from "./weather";
+import { modalOpen, modalClose } from "./modal";
 
 let searchFormEl;
 let searchResultsEl;
 let clearSearchEl;
 
 export function init() {
-  console.log("Search init");
+  console.log("初める - Search init");
   searchFormEl = document.getElementById("search-form");
   searchResultsEl = document.getElementById("search-results");
   clearSearchEl = document.getElementById("clear-search");
-  console.log("searchFormEl", searchFormEl);
   searchFormEl.addEventListener("submit", (event) => {
     event.preventDefault();
-    console.log("sdjkldhs");
     submitSearchForm(event.target);
   });
 
@@ -31,18 +33,16 @@ export function init() {
     };
 
     let existingLocationIndex = isAlreadyInLocationList(location);
-    console.log(existingLocationIndex);
     if (existingLocationIndex >= 0) {
       highlightLocationEntry(existingLocationIndex, "error");
       emptyElement(searchResultsEl, ".dynamic");
     } else if (event.target.dataset.lon && event.target.dataset.lat) {
       // Add this city to history list
-      locationList.push(location);
+      locationsData.add(location);
       renderLocationListItems();
-      highlightLocationEntry(locationList.length - 1, "new");
+      highlightLocationEntry(locationsData.all().length - 1, "new");
       // get weather info for this location
       emptyElement(searchResultsEl, ".dynamic");
-      updateLocalStorage();
     }
     getWeather(event.target);
   });
@@ -129,5 +129,5 @@ function locationDataObj(data) {
 
 // TODO: Maybe this should be in locations.js?
 function isAlreadyInLocationList(location) {
-  return locationList.findIndex((entry) => entry.name === location.name);
+  return locationsData.all().findIndex((entry) => entry.name === location.name);
 }
