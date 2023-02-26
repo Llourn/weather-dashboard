@@ -1,26 +1,26 @@
 const apiKey = "f0acb6d9e0139fb20b34cb331a5c0451";
 
-async function fetchWeather(lat, lon) {
+async function fetchCurrentConditions(lat, lon) {
   let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
   let response = await fetch(url);
   let data = await response.json();
 
-  console.log(data);
+  console.log("Fetch current conditions: ", data);
   return data;
 }
 
-async function fetchForecast(lat, lon) {
+async function fetchFiveDayForecast(lat, lon) {
   let url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
   let response = await fetch(url);
   let data = await response.json();
 
-  console.log(data);
+  console.log("Fetch five day forecast", data);
   return data;
 }
 
-async function fetchCoords(cityName) {
+async function fetchLocationCoords(cityName) {
   let limit = 5;
   let url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${apiKey}`;
   let response;
@@ -47,4 +47,4 @@ async function fetchCoords(cityName) {
   return data;
 }
 
-export { fetchForecast, fetchCoords, fetchWeather };
+export { fetchFiveDayForecast, fetchLocationCoords, fetchCurrentConditions };

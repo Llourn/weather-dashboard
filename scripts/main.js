@@ -1,12 +1,9 @@
 import "bulma/css/bulma.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "../styles/style.css";
-import { locationsData } from "./components/LocationList";
 
-import {
-  init as locationsInit,
-  renderLocationListItems,
-} from "./components/locations";
+import locationsData from "./models/locationsData";
+import { init as locationsInit } from "./components/locations";
 import { init as searchInit } from "./components/search";
 import { init as modalInit } from "./components/modal";
 import { init as weatherInit } from "./components/weather";
@@ -48,7 +45,7 @@ document.querySelector("#app").innerHTML = /*html*/ `
               </div>
               <div class="control">
                 <button id="clear-search" class="button is-danger is-light">
-                  Cancel
+                  Clear
                 </button>
               </div>
             </div>
@@ -184,7 +181,7 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
       </div>
       <div class="tile is-vertical">
         <!-- Today's weather -->
-        <div id="weather-display" class="tile is-parent is-vertical content">
+        <div id="current-conditions" class="tile is-parent is-vertical content">
           <div class="tile is-child box">
             <h2>Instructions</h2>
             <p>
@@ -251,14 +248,3 @@ locationsInit();
 modalInit();
 weatherInit();
 loadingInit();
-
-function init() {
-  console.log("初める - Main init");
-  // if (locationList.locations) {
-  //   renderLocationListItems();
-  // } else {
-  //   locationList = [];
-  // }
-}
-
-init();

@@ -1,5 +1,6 @@
 let loadingEl;
 
+// Initialize the loading component.
 export function init() {
   console.log("初める - Loading init");
   loadingEl = document.getElementById("loading");

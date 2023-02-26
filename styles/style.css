@@ -240,7 +240,7 @@ a.panel-block span:nth-child(3) {
   }
 
   #five-day-display .card-content,
-  #weather-display .card-content {
+  #current-conditions .card-content {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
