@@ -15,7 +15,7 @@ let fiveDayDisplayEl;
 export function init() {
   console.log("初める - Weather init");
   weatherDisplayEl = document.getElementById("current-conditions");
-  fiveDayDisplayEl = document.getElementById("five-day-display");
+  fiveDayDisplayEl = document.getElementById("five-day-forecast");
 }
 
 // Makes api calls for weather data and renders on screen.
@@ -163,7 +163,7 @@ function buildWeatherCard(timeslot, locationName = "") {
     return weatherCardEl;
   } else {
     let parentEl = document.createElement("div");
-    parentEl.classList.add("tile", "is-parent");
+    parentEl.classList.add("tile", "is-parent", "five-day-forecast-card");
     parentEl.append(weatherCardEl);
     return parentEl;
   }

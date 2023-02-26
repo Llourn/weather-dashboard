@@ -1,5 +1,7 @@
-/* @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"; */
-/* @import "/node_modules/@fortawesome/fontawesome-free/css/all.css"; */
+@import "./loading.css";
+
+/* --------  General Bulma css framework modifications -------- */
+
 .columns {
   margin-inline: 0;
 }
@@ -12,8 +14,17 @@
   cursor: auto;
 }
 
+.modal-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --------  Custom CSS -------- */
+
+/* Custom hero css */
 .hero-section {
-  background-image: url("./sky.jpg");
+  background-image: url("/images/sky.jpg");
   background-repeat: no-repeat;
   background-position: right;
   background-size: cover;
@@ -39,175 +50,35 @@
   font-size: clamp(2rem, 10vw, 4rem);
   color: aliceblue;
   z-index: 1;
-  /* -webkit-text-stroke: 1px #0090e6; */
-  /* text-stroke: 1px #0090e6; */
 }
 
-.modal-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+/* --------  Locations panel -------- */
 
-a.panel-block {
+.location-entry {
   display: flex;
 }
 
-a.panel-block span {
+.location-entry span {
   pointer-events: none;
 }
 
-a.panel-block span:nth-child(2) {
+.location-entry .location-title {
   flex-basis: 100%;
 }
 
-a.panel-block span:nth-child(3) {
+.location-entry .delete {
   pointer-events: all;
   margin-right: 0;
   margin-left: 0.75em;
 }
 
+/* Animations for indicating new and existing locations */
 .shine-error {
   animation: shine-error 2s;
 }
 
 .shine-new {
   animation: shine-new 2s;
-}
-
-.rain-cloud {
-  display: none;
-}
-
-.rain-cloud.is-active {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30%;
-  max-width: 300px;
-  aspect-ratio: 1 / 1;
-  margin: auto;
-  height: 100%;
-}
-
-#raindrop_1 {
-  animation: raindrop1 0.5s ease-in infinite;
-}
-
-@keyframes raindrop1 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(20%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(30%);
-    opacity: 0;
-  }
-}
-#raindrop_2 {
-  animation: raindrop2 0.6s ease-in infinite;
-}
-
-@keyframes raindrop2 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(25%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(30%);
-    opacity: 0;
-  }
-}
-#raindrop_3 {
-  animation: raindrop3 0.4s ease-in infinite;
-}
-
-@keyframes raindrop3 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(25%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(30%);
-    opacity: 0;
-  }
-}
-#raindrop_4 {
-  animation: raindrop4 0.6s ease-in infinite;
-}
-
-@keyframes raindrop4 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(35%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40%);
-    opacity: 0;
-  }
-}
-#raindrop_5 {
-  animation: raindrop5 0.8s ease-in infinite;
-}
-
-@keyframes raindrop5 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(35%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40%);
-    opacity: 0;
-  }
-}
-#raindrop_6 {
-  animation: raindrop6 0.6s ease-in infinite;
-}
-
-@keyframes raindrop6 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(35%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40%);
-    opacity: 0;
-  }
-}
-#raindrop_7 {
-  animation: raindrop7 0.7s ease-in infinite;
-}
-
-@keyframes raindrop7 {
-  0% {
-    transform: translateY(-15%);
-  }
-  80% {
-    transform: translateY(35%);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40%);
-    opacity: 0;
-  }
 }
 
 @keyframes shine-error {
@@ -234,126 +105,59 @@ a.panel-block span:nth-child(3) {
   }
 }
 
+/* --------  Responsive styling -------- */
+
 @media screen and (min-width: 0px) {
-  #five-day-display {
-    display: unset;
+  .column.input-section {
+    width: 100%;
   }
 
-  #five-day-display .card-content,
-  #current-conditions .card-content {
+  /* Applies to all weather cards. */
+  .card-content {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
     justify-content: space-between;
   }
 
-  #five-day-display .card-content > div:nth-child(1) img {
+  #five-day-forecast .card-content img {
     height: 100px;
   }
 
-  #five-day-display > h2 {
+  #five-day-forecast > h2 {
     padding-left: 12px;
-  }
-
-  .column.is-one-third {
-    width: 100%;
   }
 }
 
 @media screen and (min-width: 750px) {
-  #five-day-display {
+  main {
+    display: flex;
+  }
+
+  .column.input-section {
+    width: 50%;
+  }
+
+  #five-day-forecast {
     display: flex;
     flex-wrap: wrap;
   }
 
-  #five-day-display > * {
-    flex-basis: 225px;
-  }
-
-  #five-day-display > h2 {
+  #five-day-forecast > h2 {
     flex-basis: 100%;
   }
 
-  #five-day-display .card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+  .five-day-forecast-card {
+    flex-basis: 225px;
   }
 
-  #five-day-display
-    > div:nth-child(2)
-    #five-day-display
-    .card-content
-    > div:nth-child(1)
-    img {
-    height: 100px;
-  }
-
-  .column.is-one-third {
-    width: 50%;
-  }
-
-  .columns.is-desktop {
-    display: flex;
+  .five-day-forecast-card .card-content {
+    flex-direction: column !important;
   }
 }
 
 @media screen and (min-width: 1025px) {
-  #five-day-display {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  #five-day-display > * {
-    flex-basis: 225px;
-  }
-  #five-day-display > h2 {
-    flex-basis: 100%;
-    padding-left: 12px;
-  }
-
-  #five-day-display .card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  #five-day-display
-    > div:nth-child(2)
-    #five-day-display
-    .card-content
-    > div:nth-child(1)
-    img {
-    height: 100px;
-  }
-
-  .column.is-one-third {
+  .column.input-section {
     width: 33.3333%;
   }
 }
-
-/* .card-content {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-} */
-/* body > div > div.tile.is-vertical.column.is-one-third {
-  display: unset;
-}
-body > div {
-  display: unset;
-}
-
-@media screen and (min-width: 1200px) {
-  body > div {
-    display: flex;
-  }
-
-  body > div > div.tile.is-vertical.column.is-one-third {
-    display: flex;
-  }
-} */

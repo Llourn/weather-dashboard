@@ -1,0 +1,142 @@
+/* Rain cloud loading screen animation */
+
+.rain-cloud {
+  display: none;
+}
+
+.rain-cloud.is-active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  margin: auto;
+  height: 100%;
+}
+
+#raindrop_1 {
+  animation: raindrop1 0.5s ease-in infinite;
+}
+
+@keyframes raindrop1 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(20%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+}
+
+#raindrop_2 {
+  animation: raindrop2 0.6s ease-in infinite;
+}
+
+@keyframes raindrop2 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(25%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+}
+
+#raindrop_3 {
+  animation: raindrop3 0.4s ease-in infinite;
+}
+
+@keyframes raindrop3 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(25%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+}
+
+#raindrop_4 {
+  animation: raindrop4 0.6s ease-in infinite;
+}
+
+@keyframes raindrop4 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}
+
+#raindrop_5 {
+  animation: raindrop5 0.8s ease-in infinite;
+}
+
+@keyframes raindrop5 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}
+
+#raindrop_6 {
+  animation: raindrop6 0.6s ease-in infinite;
+}
+
+@keyframes raindrop6 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}
+
+#raindrop_7 {
+  animation: raindrop7 0.7s ease-in infinite;
+}
+
+@keyframes raindrop7 {
+  0% {
+    transform: translateY(-15%);
+  }
+  80% {
+    transform: translateY(35%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}

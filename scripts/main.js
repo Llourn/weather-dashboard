@@ -20,7 +20,7 @@ document.querySelector("#app").innerHTML = /*html*/ `
   <!-- Main content section -->
   <main class="columns is-desktop">
     <!-- Search and location history -->
-    <div class="column is-one-third">
+    <div class="column is-one-third input-section">
       <!-- Search form and search results display -->
       <div class="tile is-parent">
         <div class="tile is-child box">
@@ -57,7 +57,7 @@ document.querySelector("#app").innerHTML = /*html*/ `
       <div class="tile is-parent">
         <div id="location-container" class="tile is-child panel is-primary">
           <p class="panel-heading">Locations</p>
-          <a class="panel-block is-active">
+          <a class="panel-block is-active location-entry">
             Locations you searched for will show up here!
           </a>
         </div>
@@ -198,7 +198,7 @@ c23.1,8.2,38.9,31.1,36.9,56.8c-0.6,8.2-3,15.8-6.7,22.5c7.7-8.7,12.7-20,13.7-32.5
           </div>
         </div>
         <!-- Five day forecast -->
-        <div id="five-day-display" class="tile content"></div>
+        <div id="five-day-forecast" class="tile content"></div>
       </div>
     </div>
   </main>

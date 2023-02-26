@@ -39,7 +39,7 @@ function renderLocationListItems() {
     });
   } else {
     let defaultView = document.createElement("a");
-    defaultView.classList.add("panel-block", "is-active");
+    defaultView.classList.add("panel-block", "is-active", "location-entry");
     defaultView.textContent = "Locations you searched for will show up here!";
     locationContainerEl.append(defaultView);
   }
@@ -66,7 +66,7 @@ function highlightLocationEntry(index, state) {
 // Build the location item used in the locations container.
 function locationItem(itemData, index) {
   let item = document.createElement("a");
-  item.classList.add("panel-block", "is-active");
+  item.classList.add("panel-block", "is-active", "location-entry");
   item.setAttribute("data-lon", itemData.lon);
   item.setAttribute("data-lat", itemData.lat);
   item.dataset.locationIndex = index;
@@ -80,6 +80,7 @@ function locationItem(itemData, index) {
   leadingIcon.append(leadingIconImg);
 
   let itemName = document.createElement("span");
+  itemName.classList.add("location-title");
   itemName.textContent = itemData.name;
 
   let deleteIcon = document.createElement("span");
